@@ -2,6 +2,7 @@ import { Card, Text, TextInput, Button, ActivityIndicator, IconButton, Provider,
 import { StyleSheet, View, Alert } from 'react-native'
 import {useState} from "react"
 import Loader from './Loader'
+import globalStyles from '../common/globalStyles'
 
 const rutaList = [
     {
@@ -33,9 +34,21 @@ const AddTickets = props =>{
     const [modalSelectRuta, SetModalSelectRuta] = useState(false)
     const [checked, setChecked] = useState({});
     const [Cantidad, setCantidad] = useState(0);
+    const [total, setTotal] = useState(0)
 
-    const openModal = () => SetModalSelectRuta(true)
-    const closeModal = () => SetModalSelectRuta(false)
+    const openModal = () => {
+        SetModalSelectRuta(true)
+    }
+    const closeModal = () => {
+        SetModalSelectRuta(false)
+        onChangeInputs()
+    }
+
+    onChangeInputs = ()=>{
+        if(checked.tarifa && Cantidad>0){
+            setTotal(checked.tarifa * Cantidad)
+        }
+    }
 
     const styles = StyleSheet.create({
         container:{
@@ -67,14 +80,14 @@ const AddTickets = props =>{
             height:10
         },
         buttonSendContainer:{
-            flex:0,
-            margin: 30,
+            flexDirection:"row",
+            margin: 20,
             justifyContent:"center",
             alignItems:"center"
         },
         registerPay: {
             padding: 10,
-            marginTop: 20
+            
         },
         inputSelectRuta:{
             backgroundColor:"#fff",
@@ -180,7 +193,11 @@ const AddTickets = props =>{
                             selectionColor="#00c"
                             outlineColor="#007"
                             activeOutlineColor="#007"
-                            onChangeText={(e)=> setCantidad(e)}
+                            onChangeText={(e)=> {
+                                setCantidad(e)
+                                
+                            }}
+                            onEndEditing={onChangeInputs}
                         />
                         
                     </View>
@@ -189,7 +206,7 @@ const AddTickets = props =>{
                         style={styles.TextContainer}
                     >
                         <TextInput
-                            value={Cantidad * checked.tarifa}
+                            value={`${total} Bs.`}
                             disabled
                             
                             label="Monto a Pagar"
@@ -205,9 +222,23 @@ const AddTickets = props =>{
                         style={styles.buttonSendContainer} 
                     >
                         <Button
-                            buttonColor="#00a"
+                            buttonColor={globalStyles.colors.red}
+                            style={{
+                                width:150,
+                                margin:10
+                            }}
                             mode="contained"
                             
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            buttonColor={globalStyles.colors.blue}
+                            mode="contained"
+                            style={{
+                                width:150,
+                                margin:10
+                            }}
                         >
                             Adquirir Tickets
                         </Button>
@@ -239,7 +270,10 @@ const AddTickets = props =>{
                                                 <RadioButton 
                                                     value={i.name}
                                                     status={checked.name == i.name? 'checked': 'unchecked'}
-                                                    onPress={()=> setChecked(i)}
+                                                    onPress={()=> {
+                                                        setChecked(i)
+                                                        
+                                                    }}
                                                 />
                                                 <Text>{i.name}</Text>
                                             </View>

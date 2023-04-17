@@ -1,16 +1,20 @@
 import {ActivityIndicator, Text } from 'react-native-paper'
-import {View, StyleSheet, Dimensions} from 'react-native'
+import {View, StyleSheet, useWindowDimensions} from 'react-native'
+import globalStyles from '../common/globalStyles'
 
 const Loader = props =>{
+
+    const {height, width} = useWindowDimensions()
 
     const styles = StyleSheet.create({
         container:{
             position:'absolute',
-            height: Dimensions.get("screen").height,
-            width: Dimensions.get("screen").width,
+            flex:1,
+            height: height,
+            width: width,
             justifyContent:"center",
             alignItems:"center",
-            backgroundColor: "#55c"
+            backgroundColor: globalStyles.colors.blue
         }
     })
 
@@ -18,12 +22,12 @@ const Loader = props =>{
         <View
             style={styles.container}
         >
-            <ActivityIndicator animating={true} size={"large"} color={"#fff"} />
+            <ActivityIndicator animating={true} size={"large"} color={globalStyles.colors.white} />
             <Text
                 style={{
                     fontSize:20,
                     fontWeight:"bold",
-                    color:"#fff"
+                    color:globalStyles.colors.white
                 }}
             >
                 Cargando...

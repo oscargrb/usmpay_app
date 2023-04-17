@@ -2,6 +2,7 @@ import {Appbar} from 'react-native-paper'
 import {StyleSheet, View} from "react-native"
 import MenuAcount from "./MenuAcount"
 import React from 'react';
+import globalStyles from '../common/globalStyles';
 
 const Header = props =>{
 
@@ -22,11 +23,12 @@ const Header = props =>{
             borderColor: "red"
         },
         appbar: {
-            backgroundColor: "#55c"
+            backgroundColor: globalStyles.colors.blue
         },
         appbarText:{
-            color: "#fff",
-            fontWeight: "bold"
+            color: globalStyles.colors.white,
+            fontWeight: "bold",
+            fontStyle:"italic"            
         } 
     })
     

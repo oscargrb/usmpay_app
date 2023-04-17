@@ -1,5 +1,5 @@
 import {View, Text, Dimensions} from "react-native"
-import React from "react"
+import React, { createContext, useContext } from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
@@ -12,11 +12,12 @@ import BuyTickets from "./components/AddToWallet"
 import MenuAcount from "./components/MenuAcount"
 import WalletScreen from "./screens/WalletScreen"
 import TicketScreen from "./screens/TicketsScreen"
+import PayTicket from "./screens/PayTicket"
 
 
 const Stack = createNativeStackNavigator()
 
-const App = props=>{
+const App = props=>{    
 
     return(
         <NavigationContainer>
@@ -27,8 +28,20 @@ const App = props=>{
                     }}
                 />
                 <Stack.Screen name="About" component={AboutScreen}/>
-                <Stack.Screen name="Register" component={RegisterScreen}/>
-                <Stack.Screen name="Login" component={LoginScreen}/>
+                <Stack.Screen name="Register" component={RegisterScreen}
+                    options={{
+                        title:"",
+                        headerShadowVisible:false,
+                        
+                    }}
+                />
+                <Stack.Screen name="Login" component={LoginScreen}
+                    options={{
+                        title:"",
+                        headerShadowVisible:false,
+                        
+                    }}
+                />
                 <Stack.Screen 
                     name="Acount" 
                     component={AcountScreen}
@@ -50,8 +63,16 @@ const App = props=>{
                         headerShown:false
                     }}
                 />
+                <Stack.Screen 
+                    name="PayTicket" 
+                    component={PayTicket}
+                    options={{
+                        headerShown:false
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
+        
     )
 }
 

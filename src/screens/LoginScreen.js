@@ -1,22 +1,29 @@
-import {  Text, View, StyleSheet, Alert, Image } from "react-native";
+import {  Text, View, StyleSheet, Alert, Image, DeviceEventEmitter, TouchableHighlight } from "react-native";
 import { TextInput, Button } from "react-native-paper"
-import {useState} from "react"
+import {useContext, useEffect, useState} from "react"
+
+import TouchID from "react-native-touch-id";
+import globalStyles from "../common/globalStyles";
+import { tkn } from "../App";
+import nxu from "../context/Nxu";
 
 const styles = StyleSheet.create({
     container:{
-        margin: 20
+        flex:1,
+        padding: 20,
+        backgroundColor:globalStyles.colors.white
     },
     TextContainer:{  
         marginBottom: 10
     },  
     title:{
         fontSize: 20,
-        color: "#000",
+        color: globalStyles.colors.blue,
         fontWeight:"bold"
     },
     textInfo:{
         fontSize: 15,
-        color: "#000"
+        color: globalStyles.colors.blue
     },
     buttonSend:{
         width:10,
@@ -30,7 +37,8 @@ const styles = StyleSheet.create({
     },
     fingerImage:{
         width: 100,
-        height: 100
+        height: 100,
+        resizeMode:"contain"
     },
     fingerText:{
         fontSize: 15,
@@ -46,6 +54,34 @@ const LoginScreen = props=>{
         password: null
     })
 
+    useEffect(()=>{
+        TouchID.isSupported().then(biometryType=>{
+            Alert.alert('biometry works!!!!!!')
+            Alert.alert(biometryType.toString())
+        }).catch(error=>{
+            Alert.alert(error.code.toString())
+        })
+    }, [])
+
+    const loginWithFinger = ()=>{
+        TouchID.authenticate('Para iniciar sesion coloca tu huella dactilar',
+            {
+                title:"Coloca tu huella"
+            }
+        )
+            .then(sucess=>{
+                Alert.alert('Login sucessfull', 'Credential: fingerprint!', [
+                    {
+                      text: 'Continue',
+                      onPress: () => props.navigation.navigate('Acount')
+                    }
+                ])
+            })
+            .catch(error=>{
+                Alert.alert('Authetication fail!')
+            })
+    }
+
     const onSubmitForm = ()=>{
         for(let element of Object.keys(registerData)) {
             if(!registerData[element]){
@@ -55,14 +91,37 @@ const LoginScreen = props=>{
             }
         };
 
-        return(
-            Alert.alert('Login sucessfull', JSON.stringify(registerData), [
-                {
-                  text: 'Continue',
-                  onPress: () => props.navigation.navigate('Acount')
-                }
-            ])
-        )
+        fetch("http://192.168.1.106:3500/auth",{
+            method:"POST",
+            headers:{
+                //'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                user:registerData.document,
+                pwd: registerData.password
+            })
+        }).then(response=>{
+            if(response.status == 200){
+                response.json().then(async data=>{
+                    if(data.accessToken){
+                        const result = await nxu.snxut(data.accessToken)
+                        if(result.ok){
+                            Alert.alert('Login sucessfull!')
+                            props.navigation.navigate('Acount')
+                        }
+                        
+                    }else{
+                        Alert.alert('Bad Login!')
+                    }
+                })
+            }else{
+                Alert.alert('Bad Login!')
+            }
+            
+        }).catch(e=>{
+            console.log(e)
+        })
     }
 
     const onChageField = (field, data) =>{
@@ -84,7 +143,7 @@ const LoginScreen = props=>{
                 <Text
                     style={styles.title} 
                 >
-                    Inicia Sesion
+                    Inicia Sesión
                 </Text>
             </View>
 
@@ -103,9 +162,10 @@ const LoginScreen = props=>{
             >
                 <TextInput
                     onChangeText={text => onChageField("document", text)}
-                    label="Numero de documento *"
+                    label="Número de documento *"
                     mode="outlined"
                     selectionColor="#00c"
+                    outlineStyle={{borderWidth:2, borderColor: globalStyles.colors.blue}}
                     outlineColor="#007"
                     activeOutlineColor="#007"
                 /> 
@@ -117,6 +177,7 @@ const LoginScreen = props=>{
                 <TextInput
                     onChangeText={text => onChageField("password", text)}
                     mode="outlined"
+                    outlineStyle={{borderWidth:2, borderColor: globalStyles.colors.blue}}
                     selectionColor="#00c"
                     outlineColor="#007"
                     activeOutlineColor="#007"
@@ -129,25 +190,34 @@ const LoginScreen = props=>{
                 style={styles.buttonSendContainer} 
             >
                 <Button
-                    buttonColor="#00a"
+                    buttonColor={globalStyles.colors.blue}
                     mode="contained"
                     onPress={onSubmitForm}
                 >
-                    Iniciar Sesion
+                    Iniciar Sesión
                 </Button>
             </View>
 
             <View
                 style={styles.buttonSendContainer} 
             >
-                <Image
-                    style={styles.fingerImage} 
-                    source={
-                        require('../assets/logoFingerprint.png')
-                    }
-                />
+                <TouchableHighlight 
+                    onPress = {loginWithFinger}
+                    underlayColor={"transparent"}
+                    
+                >
+                    <Image
+                        style={styles.fingerImage} 
+                        source={
+                            require('../assets/logoFinger2.png')
+                        }
+                        
+                    />
+                    
+                </TouchableHighlight>
                 <Text
                     style={styles.fingerText}
+                    
                 >
                     Ingresa con tu huella
                 </Text>

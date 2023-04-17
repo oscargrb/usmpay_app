@@ -33,7 +33,8 @@ const ActionPayTicket = props =>{
                         uncheckedColor:"#00b",
                         icon:"bus",
                         value:"Abordar",
-                        label:"Pagar Pasaje"
+                        label:"Pagar Pasaje",
+                        onPress: ()=> props.nav("PayTicket")
                     },
                     {
                         icon:"ticket",

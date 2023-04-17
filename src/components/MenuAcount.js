@@ -1,9 +1,12 @@
-import * as React from 'react';
+import {useState} from "react"
 import { View, Dimensions, StyleSheet } from 'react-native';
 import { Button, Menu, Divider, Provider, Modal, Drawer, Portal, Text } from 'react-native-paper';
+import Loader from "./Loader";
 
 
 const MenuAcount = (props) => {
+
+  const [loader, setLoader] = useState(false)
   
   const styles = StyleSheet.create({
     container:{
@@ -53,9 +56,21 @@ const MenuAcount = (props) => {
             focusedIcon="inbox"
             unfocusedIcon="exit-to-app"
             label="Cerrar Sesion"
-            onPress={()=> props.nav("Home")}
+            onPress={()=> {
+              setLoader(true)
+              setTimeout(()=>{
+                setLoader(false)
+                props.nav("Home")
+              }, 3000)
+            }}
           />
         </Drawer.Section>
+
+        {
+          loader?
+            <Loader />:
+            <></>
+        }
       </View>
     
   );

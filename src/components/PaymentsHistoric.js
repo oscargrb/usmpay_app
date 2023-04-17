@@ -1,5 +1,6 @@
 import {FlatList, View, StyleSheet, Dimensions, TouchableHighlight} from "react-native"
 import { IconButton, Text } from "react-native-paper"
+import globalStyles from "../common/globalStyles"
 
 const data = [
     {
@@ -54,11 +55,16 @@ const PaymentsHistoric = props =>{
     
 
     const styles = StyleSheet.create({
-        constainer:{
-            backgroundColor: "#333",
+        container:{
+            
+            height:250,
+            
+            backgroundColor: globalStyles.colors.blue,
             borderTopStartRadius: 20,
             borderTopEndRadius: 20,
-            height:330,
+            //height:Dimensions.get("screen").height - 490,
+            //borderWidth:2,
+            //borderColor:"red",
             
         },
         header:{
@@ -90,12 +96,13 @@ const PaymentsHistoric = props =>{
         },
         text:{
             color:"#fff"
-        }
+        },
+        
     })
 
     return(
         <View
-            style={styles.constainer}
+            style={styles.container}
         >
             <View
                 style={styles.header}
@@ -118,7 +125,7 @@ const PaymentsHistoric = props =>{
             <FlatList
                 data={data}
                 scrollEnabled={true}
-                
+                style={styles.flatlist}
                 renderItem={({item})=> 
                     <View
                         style={styles.itemContainer}
@@ -128,7 +135,7 @@ const PaymentsHistoric = props =>{
                         >
                             <IconButton
                                 style={styles.icon}
-                                iconColor="#777" 
+                                iconColor="#ccc" 
                                 icon={
                                     item.type == "Recarga"?
                                         "ticket":

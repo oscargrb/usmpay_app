@@ -2,17 +2,18 @@ import { Text, View, StyleSheet, Image} from "react-native"
 import React from "react"
 import {  Button } from "react-native-paper"
 import MenuAcount from "../components/MenuAcount"
-
+import globalStyles from "../common/globalStyles"
 
 const styles = StyleSheet.create({
     wrappper:{
         flex:1,
         alignItems: 'center',
-        justifyContent:"flex-start"
+        justifyContent:"space-evenly",
+        backgroundColor: globalStyles.colors.blue 
     },  
     logo: {
-        width: 600,
-        height: 400,
+        width: 200,
+        height: 200,
         resizeMode: "contain",
         borderWidth: 2
     },
@@ -20,11 +21,19 @@ const styles = StyleSheet.create({
         margin: 20
     },
     registerTextTitle: {
-        textAlign:"center"
+        textAlign:"center",
+        color: globalStyles.colors.white
     },
     registerTextLink:{
         textAlign:"center",
-        color:"blue"
+        color:globalStyles.colors.white
+    },
+    logoTitle:{
+        color:globalStyles.colors.white,
+        fontSize: 50,
+        fontWeight:"bold",
+        fontFamily:"roboto",
+        fontStyle:"italic"
     }
 })
 
@@ -36,11 +45,17 @@ const HomeScreen = props =>{
         >
             <Image
                 style={styles.logo}
-                source={require('../assets/logo.png')}
+                source={require('../assets/logo_white.png')}
             />
+            <Text
+                style={styles.logoTitle}
+            >
+                USMPAY
+            </Text>
             <View>
                 <Button
-                    buttonColor="#00a"
+                    buttonColor= {globalStyles.colors.white}
+                    textColor={globalStyles.colors.blue}
                     mode="contained"
                     onPress={() => props.navigation.navigate('Login')}
                 >

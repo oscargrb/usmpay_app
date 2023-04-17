@@ -2,6 +2,7 @@ import { Card, Text, TextInput, Button, ActivityIndicator } from 'react-native-p
 import { StyleSheet, View, Alert } from 'react-native'
 import {useState} from "react"
 import Loader from './Loader'
+import globalStyles from '../common/globalStyles'
 
 const AddToWallet = props =>{
 
@@ -18,7 +19,7 @@ const AddToWallet = props =>{
         setLoader(true)
 
         
-        fetch("http://192.168.1.106:3000/getPayment?id=" + refNumb, {
+        fetch("http://192.168.1.104:3000/getPayment?id=" + refNumb, {
             method:"GET",
             headers:{
                 "Content-Type":"application/json",
@@ -81,8 +82,8 @@ const AddToWallet = props =>{
             height:10
         },
         buttonSendContainer:{
-            flex:0,
-            margin: 30,
+            margin:20,
+            flexDirection:"row",
             justifyContent:"center",
             alignItems:"center"
         },
@@ -142,7 +143,10 @@ const AddToWallet = props =>{
                         label="Numero de Operacion *"
                         mode="outlined"
                         selectionColor="#00c"
-                        outlineColor="#007"
+                        outlineColor={globalStyles.colors.blue}
+                        outlineStyle={{
+                            borderWidth:2
+                        }}
                         activeOutlineColor="#007"
                     /> 
                 </View>
@@ -152,10 +156,26 @@ const AddToWallet = props =>{
                 <View
                     style={styles.buttonSendContainer} 
                 >
+                    
                     <Button
-                        buttonColor="#00a"
+                        buttonColor={globalStyles.colors.red}
+                        mode="contained"
+                        onPress={()=> props.nav('Acount')}
+                        style={{
+                            width:150,
+                            margin:10
+                        }}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button
+                        buttonColor={globalStyles.colors.blue}
                         mode="contained"
                         onPress={onSubmitForm}
+                        style={{
+                            width:150,
+                            margin:10
+                        }}
                     >
                         Registrar Pago
                     </Button>

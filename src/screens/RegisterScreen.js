@@ -1,22 +1,26 @@
 import {  Text, View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button } from "react-native-paper"
 import {useState} from "react"
+import globalStyles from "../common/globalStyles";
 
 const styles = StyleSheet.create({
     container:{
-        margin: 20
+        flex:1,
+        padding: 20,
+        backgroundColor: globalStyles.colors.white,
     },
     TextContainer:{  
         marginBottom: 10
+
     },  
     title:{
         fontSize: 20,
-        color: "#000",
+        color: globalStyles.colors.blue,
         fontWeight:"bold"
     },
     textInfo:{
         fontSize: 15,
-        color: "#000"
+        color: globalStyles.colors.blue
     },
     buttonSend:{
         width:10,
@@ -104,7 +108,10 @@ const RegisterScreen = props=>{
                     label="Numero de documento *"
                     mode="outlined"
                     selectionColor="#00c"
-                    outlineColor="#007"
+                    outlineColor={globalStyles.colors.blue}
+                    outlineStyle={{
+                        borderWidth:2
+                    }}
                     activeOutlineColor="#007"
                 /> 
             </View>
@@ -116,7 +123,10 @@ const RegisterScreen = props=>{
                     onChangeText={text => onChageField("password", text)}
                     mode="outlined"
                     selectionColor="#00c"
-                    outlineColor="#007"
+                    outlineColor={globalStyles.colors.blue}
+                    outlineStyle={{
+                        borderWidth:2
+                    }}
                     activeOutlineColor="#007"
                     label="Crear clave de acceso *"
                     secureTextEntry={true}
@@ -130,7 +140,10 @@ const RegisterScreen = props=>{
                     onChangeText={text => onChageField("passwordConfirm", text)}
                     mode="outlined"
                     selectionColor="#00c"
-                    outlineColor="#007"
+                    outlineColor={globalStyles.colors.blue}
+                    outlineStyle={{
+                        borderWidth:2
+                    }}
                     activeOutlineColor="#007"
                     label="Confirmar clave de acceso *"
                     secureTextEntry={true}
@@ -141,7 +154,7 @@ const RegisterScreen = props=>{
                 style={styles.buttonSendContainer} 
             >
                 <Button
-                    buttonColor="#00a"
+                    buttonColor={globalStyles.colors.blue}
                     mode="contained"
                     onPress={onSubmitForm}
                 >
