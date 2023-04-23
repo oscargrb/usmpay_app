@@ -1,5 +1,5 @@
 import {View, Text, Dimensions} from "react-native"
-import React, { createContext, useContext } from "react"
+import React, { createContext, useContext, useEffect } from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
@@ -13,11 +13,27 @@ import MenuAcount from "./components/MenuAcount"
 import WalletScreen from "./screens/WalletScreen"
 import TicketScreen from "./screens/TicketsScreen"
 import PayTicket from "./screens/PayTicket"
+import nxu from "./context/Nxu"
 
 
 const Stack = createNativeStackNavigator()
 
-const App = props=>{    
+const App = props=>{
+    
+    useEffect(()=>{
+        const sendNxu = async ()=>{
+            const result = await nxu.gnxut()
+            console.log(result, "aquii")
+
+            if(result.ok){
+                console.log(result, "aquii")
+            }else{
+                console.log(result, "aquii2")
+            }
+        }
+
+        sendNxu()
+    }, [])
 
     return(
         <NavigationContainer>
@@ -31,14 +47,14 @@ const App = props=>{
                 <Stack.Screen name="Register" component={RegisterScreen}
                     options={{
                         title:"",
-                        headerShadowVisible:false,
+                        headerShown:false
                         
                     }}
                 />
                 <Stack.Screen name="Login" component={LoginScreen}
                     options={{
                         title:"",
-                        headerShadowVisible:false,
+                        headerShown:false
                         
                     }}
                 />

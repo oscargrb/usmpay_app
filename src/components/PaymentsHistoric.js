@@ -57,14 +57,12 @@ const PaymentsHistoric = props =>{
     const styles = StyleSheet.create({
         container:{
             
-            height:250,
-            
             backgroundColor: globalStyles.colors.blue,
             borderTopStartRadius: 20,
             borderTopEndRadius: 20,
-            //height:Dimensions.get("screen").height - 490,
-            //borderWidth:2,
-            //borderColor:"red",
+            height:300,
+            
+            flex:1
             
         },
         header:{

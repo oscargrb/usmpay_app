@@ -1,5 +1,6 @@
 import { Card, Text, IconButton } from 'react-native-paper'
 import { StyleSheet, View } from 'react-native'
+import globalStyles from '../common/globalStyles'
 
 const DisplayTickets = props =>{
 
@@ -10,10 +11,12 @@ const DisplayTickets = props =>{
         },
         CardTitle:{
             fontSize:16,
+            color:globalStyles.colors.black,
             textAlign: "center",
             fontWeight: "bold"
         },
         CardContentTickets: {
+            color:globalStyles.colors.black,
             textAlign: "center",
             fontSize: 25
         },
@@ -28,6 +31,9 @@ const DisplayTickets = props =>{
         },
         ticketsDisp:{
             margin:10
+        },
+        card:{
+            backgroundColor: globalStyles.colors.white
         }
     })
 
@@ -35,7 +41,9 @@ const DisplayTickets = props =>{
         <View
             style= {styles.container}
         >
-            <Card>
+            <Card
+                style={styles.card}
+            >
                 <Card.Title 
                     title="Saldo Billetera"
                     titleStyle = {styles.CardTitle} 

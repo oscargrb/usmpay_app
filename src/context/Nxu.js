@@ -26,6 +26,18 @@ const nxu = {
                     resolve({ok: false})
                 })
         })
+    },
+
+    delxut: ()=>{
+        return new Promise(resolve =>{
+            EncryptedStorage.removeItem('nxu')
+                .then(()=>{
+                    resolve({ok: true})
+                })
+                .catch(e=>{
+                    resolve({ok:false, e})
+                })
+        })
     }
 }
 

@@ -6,6 +6,9 @@ import TouchID from "react-native-touch-id";
 import globalStyles from "../common/globalStyles";
 import { tkn } from "../App";
 import nxu from "../context/Nxu";
+import Loader from "../components/Loader";
+import Ucred from "../context/Ucred";
+import ApiService from "../common/ApiService";
 
 const styles = StyleSheet.create({
     container:{
@@ -54,13 +57,33 @@ const LoginScreen = props=>{
         password: null
     })
 
+    const [fingerprintEnable, setFingerprintEnable] = useState(true)
+
+    const [loader, setLoader] = useState(false)
+
     useEffect(()=>{
+        setLoader(true)
         TouchID.isSupported().then(biometryType=>{
-            Alert.alert('biometry works!!!!!!')
-            Alert.alert(biometryType.toString())
+            //Alert.alert('biometry works!!!!!!')
+            //Alert.alert(biometryType.toString())
         }).catch(error=>{
-            Alert.alert(error.code.toString())
+            //Alert.alert(error.code.toString())
+            setFingerprintEnable(false)
         })
+
+        const fingerPref = async ()=>{
+            const fpref = await Ucred.gFingerPref()
+
+            if(fpref.ok){
+                if(fpref.pref /*&& ...data exist....*/){
+                    setFingerprintEnable(true)
+                }
+            }
+
+            setLoader(false)
+        }
+
+        fingerPref()
     }, [])
 
     const loginWithFinger = ()=>{
@@ -69,29 +92,77 @@ const LoginScreen = props=>{
                 title:"Coloca tu huella"
             }
         )
-            .then(sucess=>{
-                Alert.alert('Login sucessfull', 'Credential: fingerprint!', [
-                    {
-                      text: 'Continue',
-                      onPress: () => props.navigation.navigate('Acount')
-                    }
-                ])
+            .then(async sucess=>{
+                setLoader(true)
+
+                const cred = await Ucred.gUcred()
+
+                if(cred.ok){
+                    
+
+                    fetch(`${ApiService.url}/auth`,{
+                        method:"POST",
+                        headers:{
+                            //'Content-Type': 'application/x-www-form-urlencoded'
+                            'Content-Type': 'application/json'
+                        },
+                        body:JSON.stringify({
+                            user:cred.result.data.user,
+                            pwd: cred.result.data.pwd
+                        })
+                    }).then(response=>{
+                        console.log(response)
+                        if(response.status == 200){
+                            response.json().then(async data=>{
+                                console.log(data)
+                                if(data.accessToken){
+                                    const result = await nxu.snxut(data.accessToken)
+                                    if(result.ok){
+                                        setLoader(false)
+                                        //Alert.alert('Login sucessfull!')
+                                        
+                                        props.navigation.navigate('Acount')
+                                    }
+                                    
+                                }else{
+                                    setLoader(false)
+                                    Alert.alert('Bad Login!')
+                                }
+                            })
+                        }else{
+                            setLoader(false)
+                            Alert.alert('Bad Login!')
+                        }
+                        
+                    }).catch(e=>{
+                        setLoader(false)
+                        Alert.alert('Bad Login!')
+                        console.log(e)
+                    }) 
+                }
             })
             .catch(error=>{
+                setLoader(false)
                 Alert.alert('Authetication fail!')
+                console.log(error)
             })
     }
 
-    const onSubmitForm = ()=>{
+    const onSubmitForm = (dataFinger)=>{
+        console.log(registerData)
+        setLoader(true)
+
         for(let element of Object.keys(registerData)) {
             if(!registerData[element]){
+                setLoader(false)
                 return(
                     Alert.alert("Debe completar todos los campos")
                 )
             }
         };
+        
 
-        fetch("http://192.168.1.106:3500/auth",{
+        fetch(`${ApiService.url}/auth`,{
             method:"POST",
             headers:{
                 //'Content-Type': 'application/x-www-form-urlencoded'
@@ -102,24 +173,36 @@ const LoginScreen = props=>{
                 pwd: registerData.password
             })
         }).then(response=>{
+            console.log(response)
             if(response.status == 200){
                 response.json().then(async data=>{
+                    
                     if(data.accessToken){
                         const result = await nxu.snxut(data.accessToken)
                         if(result.ok){
-                            Alert.alert('Login sucessfull!')
+                            setLoader(false)
+                            //Alert.alert('Login sucessfull!')
+                            const scred = await Ucred.sUcred({
+                                user:registerData.document,
+                                pwd: registerData.password 
+                            })
+                            console.log(scred)
                             props.navigation.navigate('Acount')
                         }
                         
                     }else{
+                        setLoader(false)
                         Alert.alert('Bad Login!')
                     }
                 })
             }else{
+                setLoader(false)
                 Alert.alert('Bad Login!')
             }
             
         }).catch(e=>{
+            setLoader(false)
+            Alert.alert('Bad Login!')
             console.log(e)
         })
     }
@@ -162,6 +245,8 @@ const LoginScreen = props=>{
             >
                 <TextInput
                     onChangeText={text => onChageField("document", text)}
+                    value={registerData.document}
+                    inputMode='numeric'
                     label="Número de documento *"
                     mode="outlined"
                     selectionColor="#00c"
@@ -176,6 +261,7 @@ const LoginScreen = props=>{
             >
                 <TextInput
                     onChangeText={text => onChageField("password", text)}
+                    value={registerData.password}
                     mode="outlined"
                     outlineStyle={{borderWidth:2, borderColor: globalStyles.colors.blue}}
                     selectionColor="#00c"
@@ -198,30 +284,40 @@ const LoginScreen = props=>{
                 </Button>
             </View>
 
-            <View
-                style={styles.buttonSendContainer} 
-            >
-                <TouchableHighlight 
-                    onPress = {loginWithFinger}
-                    underlayColor={"transparent"}
-                    
+            {
+                fingerprintEnable?
+                <View
+                    style={styles.buttonSendContainer} 
                 >
-                    <Image
-                        style={styles.fingerImage} 
-                        source={
-                            require('../assets/logoFinger2.png')
-                        }
+                    <TouchableHighlight 
+                        onPress = {loginWithFinger}
+                        underlayColor={"transparent"}
                         
-                    />
-                    
-                </TouchableHighlight>
-                <Text
-                    style={styles.fingerText}
-                    
-                >
-                    Ingresa con tu huella
-                </Text>
-            </View>
+                    >
+                        <Image
+                            style={styles.fingerImage} 
+                            source={
+                                require('../assets/logoFinger2.png')
+                            }
+                            
+                        />
+                        
+                    </TouchableHighlight>
+                    <Text
+                        style={styles.fingerText}
+                        
+                    >
+                        Ingresa con tu huella
+                    </Text>
+                </View>:
+                <></>
+            }
+
+            {
+                loader?
+                    <Loader />:
+                    <></>
+            }
         </View>
     )
 }

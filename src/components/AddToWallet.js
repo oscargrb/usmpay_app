@@ -58,10 +58,11 @@ const AddToWallet = props =>{
         },
         CardTitle:{
             textAlign: "left",
-            fontWeight: "bold"
+            fontWeight: "bold",
+            color: globalStyles.colors.black
         },
         CardContentInfo: {
-            
+            color: globalStyles.colors.black,
             fontWeight:"bold",
             textAlign: "left"
         },
@@ -90,6 +91,12 @@ const AddToWallet = props =>{
         registerPay: {
             padding: 10,
             marginTop: 20
+        },
+        card:{
+            backgroundColor:globalStyles.colors.white,
+        },
+        subtitle:{
+            color: globalStyles.colors.black
         }
     })
 
@@ -98,11 +105,14 @@ const AddToWallet = props =>{
             style= {styles.container}
         >
             
-            <Card>
+            <Card
+                style={styles.card}
+            >
                 <Card.Title 
                     title="Quieres recargar tu Billetera?"
                     subtitle="Realiza un Pago Movil a la siguiente cuenta: "
                     titleStyle = {styles.CardTitle} 
+                    subtitleStyle = {styles.subtitle}
                 />
                 <Card.Content>
                     <Text style={styles.CardContentInfo} >Banco: Mercantil</Text>
@@ -140,14 +150,27 @@ const AddToWallet = props =>{
                     <TextInput
                         value={refNumb}
                         onChangeText={(val) => onChageField(val)}
-                        label="Numero de Operacion *"
-                        mode="outlined"
+                        
+                        
                         selectionColor="#00c"
                         outlineColor={globalStyles.colors.blue}
                         outlineStyle={{
                             borderWidth:2
                         }}
                         activeOutlineColor="#007"
+
+                        backgroundColor={globalStyles.colors.white}
+                        label={
+                            <Text
+                                style={{backgroundColor:"white", color:"black"}}
+                            >
+                                Numero de Operacion *
+                            </Text>
+                        }
+                        mode="flat"
+                        contentStyle={{color:globalStyles.colors.black}}
+                        underlineColor='transparent'
+                        activeUnderlineColor='transparent'
                     /> 
                 </View>
 
@@ -159,6 +182,7 @@ const AddToWallet = props =>{
                     
                     <Button
                         buttonColor={globalStyles.colors.red}
+                        textColor={globalStyles.colors.white}
                         mode="contained"
                         onPress={()=> props.nav('Acount')}
                         style={{
@@ -170,6 +194,7 @@ const AddToWallet = props =>{
                     </Button>
                     <Button
                         buttonColor={globalStyles.colors.blue}
+                        textColor={globalStyles.colors.white}
                         mode="contained"
                         onPress={onSubmitForm}
                         style={{

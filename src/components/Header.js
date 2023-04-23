@@ -51,7 +51,7 @@ const Header = props =>{
             </Appbar.Header>
             {
                 visible?
-                    <MenuAcount nav={props.nav}/>:
+                    <MenuAcount nav={props.nav} closeMenu={closeMenu} />:
                     <></>
             }
         </View>

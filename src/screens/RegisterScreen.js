@@ -2,6 +2,9 @@ import {  Text, View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button } from "react-native-paper"
 import {useState} from "react"
 import globalStyles from "../common/globalStyles";
+import Loader from "../components/Loader";
+import Ucred from "../context/Ucred";
+import ApiService from "../common/ApiService";
 
 const styles = StyleSheet.create({
     container:{
@@ -39,8 +42,12 @@ const RegisterScreen = props=>{
     const [registerData, setRegisterData] = useState({
         document:null,
         password: null,
-        passwordConfirm: null
+        passwordConfirm: null,
+        phone: null,
+        mail: null
     })
+
+    const [loader, setLoader] = useState(false)
 
     const onSubmitForm = ()=>{
         for(let element of Object.keys(registerData)) {
@@ -56,10 +63,38 @@ const RegisterScreen = props=>{
                 Alert.alert("Las contraseñas no coinciden")
             )
         }
-
-        return(
-            Alert.alert(JSON.stringify(registerData))
-        )
+        
+        fetch(`${ApiService.url}/auth`,{
+            method:"POST",
+            headers:{
+                //'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                user: registerData.document,
+                pwd: registerData.password,
+                mail: registerData.mail,
+                roll: 2001,
+                phone: registerData.phone
+            })
+        }).then(response=>{
+            console.log(response)
+            setLoader(false)
+            if(response.ok){
+                response.json().then( async data=>{
+                    console.log(data)
+                    const fpref = await Ucred.cFingPref()
+                    console.log("fpref create: ",fpref.ok)
+                    props.navigation.navigate('Login')
+                })
+            }else{
+                console.log('Bad register!', response)
+            }
+            
+        }).catch(e=>{
+            setLoader(false)
+            console.log(e)
+        })
     }
 
     const onChageField = (field, data) =>{
@@ -105,7 +140,41 @@ const RegisterScreen = props=>{
             >
                 <TextInput
                     onChangeText={text => onChageField("document", text)}
-                    label="Numero de documento *"
+                    inputMode='numeric'
+                    label="Número de documento *"
+                    mode="outlined"
+                    selectionColor="#00c"
+                    outlineColor={globalStyles.colors.blue}
+                    outlineStyle={{
+                        borderWidth:2
+                    }}
+                    activeOutlineColor="#007"
+                /> 
+            </View>
+
+            <View
+                style={styles.TextContainer}
+            >
+                <TextInput
+                    onChangeText={text => onChageField("mail", text)}
+                    label="Correo Electrónico *"
+                    mode="outlined"
+                    selectionColor="#00c"
+                    outlineColor={globalStyles.colors.blue}
+                    outlineStyle={{
+                        borderWidth:2
+                    }}
+                    activeOutlineColor="#007"
+                /> 
+            </View>
+
+            <View
+                style={styles.TextContainer}
+            >
+                <TextInput
+                    onChangeText={text => onChageField("phone", text)}
+                    inputMode='numeric'
+                    label="Número de teléfono *"
                     mode="outlined"
                     selectionColor="#00c"
                     outlineColor={globalStyles.colors.blue}
@@ -161,6 +230,12 @@ const RegisterScreen = props=>{
                     Registrarme
                 </Button>
             </View>
+
+            {
+                loader?
+                    <Loader />:
+                    <></>
+            }
         </View>
     )
 }

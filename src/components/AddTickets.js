@@ -56,12 +56,17 @@ const AddTickets = props =>{
         },
         CardTitle:{
             textAlign: "left",
-            fontWeight: "bold"
+            fontWeight: "bold",
+            color:globalStyles.colors.black
         },
         CardContentInfo: {
             
             fontWeight:"bold",
-            textAlign: "left"
+            textAlign: "left",
+            color:globalStyles.colors.black
+        },
+        subTitle:{
+            color:globalStyles.colors.black
         },
         TextContainer:{  
             marginBottom: 10
@@ -103,6 +108,9 @@ const AddTickets = props =>{
         itemRuta:{
             flexDirection:"row",
             alignItems:"center"
+        },
+        card:{
+            backgroundColor:globalStyles.colors.white
         }
     })
 
@@ -112,10 +120,13 @@ const AddTickets = props =>{
                 style= {styles.container}
             >
                 
-                <Card>
+                <Card
+                    style={styles.card}
+                >
                     <Card.Title 
                         title="Quieres adquirir tus Tickets?"
                         subtitle="Aca puedes hacerlo"
+                        subtitleStyle={styles.subTitle}
                         titleStyle = {styles.CardTitle} 
                     />
                     <Card.Content>
@@ -153,12 +164,16 @@ const AddTickets = props =>{
                         <TextInput
                             value="30.5 Bs."
                             disabled
-                            
-                            label="Saldo Disponible"
-                            mode="outlined"
-                            selectionColor="#00c"
-                            outlineColor="#007"
-                            activeOutlineColor="#007"
+                            backgroundColor={globalStyles.colors.white}
+                            label={
+                                <Text
+                                    style={{backgroundColor:"white", color:"black"}}
+                                >
+                                    Saldo Disponible
+                                </Text>
+                            }
+                            mode="flat"
+                            contentStyle={{color:globalStyles.colors.black}}
                         />
                         
                     </View>
@@ -169,14 +184,18 @@ const AddTickets = props =>{
                         <View
                             style={styles.inputSelectRuta}
                         >
-                            <Text>
+                            <Text
+                                style={{color:globalStyles.colors.black}}
+                            >
                                 {
                                     checked.name?
                                     checked.name + ' - ' + checked.tarifa + 'Bs.':
                                     'Selecciona una Ruta'
+                                    
                                 }
                             </Text>
                             <IconButton 
+                                iconColor={globalStyles.colors.black}
                                 icon={"chevron-down"}
                                 onPress={openModal}
                             />
@@ -188,16 +207,23 @@ const AddTickets = props =>{
                     >
                         <TextInput
                             inputMode='numeric'
-                            label="Cantidad *"
-                            mode="outlined"
-                            selectionColor="#00c"
-                            outlineColor="#007"
-                            activeOutlineColor="#007"
+                            backgroundColor={globalStyles.colors.white}
+                            label={
+                                <Text
+                                    style={{backgroundColor:"white", color:"black"}}
+                                >
+                                    Cantidad *
+                                </Text>
+                            }
+                            mode="flat"
+                            contentStyle={{color:globalStyles.colors.black}}
                             onChangeText={(e)=> {
                                 setCantidad(e)
-                                
                             }}
                             onEndEditing={onChangeInputs}
+                            underlineColor='transparent'
+                            activeUnderlineColor='transparent'
+                            selectionColor="#00c"
                         />
                         
                     </View>
@@ -208,12 +234,22 @@ const AddTickets = props =>{
                         <TextInput
                             value={`${total} Bs.`}
                             disabled
+                            mode="flat"
                             
-                            label="Monto a Pagar"
-                            mode="outlined"
-                            selectionColor="#00c"
-                            outlineColor="#007"
-                            activeOutlineColor="#007"
+                            label={
+                                <Text
+                                    style={{backgroundColor:"white", color:"black"}}
+                                >
+                                    Monto a pagar
+                                </Text>
+                            }
+
+                            contentStyle={{color:globalStyles.colors.black}}
+                            
+                            backgroundColor={globalStyles.colors.white}
+                            underlineColor='black'
+                            activeUnderlineColor='black'
+                            activeOutlineColor='black'
                         />
                         
                     </View>
@@ -227,20 +263,22 @@ const AddTickets = props =>{
                                 width:150,
                                 margin:10
                             }}
+                            textColor={globalStyles.colors.white}
                             mode="contained"
-                            
+                            onPress={()=> props.nav('Acount')}
                         >
                             Cancelar
                         </Button>
                         <Button
                             buttonColor={globalStyles.colors.blue}
+                            textColor={globalStyles.colors.white}
                             mode="contained"
                             style={{
                                 width:150,
                                 margin:10
                             }}
                         >
-                            Adquirir Tickets
+                            Adquirir
                         </Button>
                     </View>
                 </View>

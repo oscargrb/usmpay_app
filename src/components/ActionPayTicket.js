@@ -1,5 +1,6 @@
 import { View, StyleSheet, Dimensions } from "react-native"
 import { IconButton, SegmentedButtons } from "react-native-paper"
+import globalStyles from "../common/globalStyles"
 
 const ActionPayTicket = props =>{
 
@@ -7,6 +8,12 @@ const ActionPayTicket = props =>{
         container:{
             margin:10,
             marginTop:0
+        },
+        segButtons:{
+            backgroundColor:globalStyles.colors.white
+        },
+        buttons:{
+            color:globalStyles.colors.blue
         }
     })
 
@@ -14,35 +21,34 @@ const ActionPayTicket = props =>{
         <View
             style={styles.container}
         >
-            {/* <IconButton
-
-                size={60}
-                iconColor="#fff"
-                containerColor="#33a" 
-                mode="contained"
-                icon={"bus"}
-            /> */}
 
             <SegmentedButtons
+                style={styles.segButtons}
                 density="small"
                 onValueChange={()=> console.log("sad")} 
                 buttons={[
                     {
-                        style:{backgroundColor:"#fff"},
-                        checkedColor:"#b00",
-                        uncheckedColor:"#00b",
+                        style:styles.buttons,
+                        checkedColor:globalStyles.colors.black,
+                        uncheckedColor:globalStyles.colors.blue,
                         icon:"bus",
                         value:"Abordar",
                         label:"Pagar Pasaje",
                         onPress: ()=> props.nav("PayTicket")
                     },
                     {
+                        style:styles.buttons,
+                        checkedColor:globalStyles.colors.black,
+                        uncheckedColor:globalStyles.colors.blue,
                         icon:"ticket",
                         value:"Mis Tickets",
                         label:"Mis Tickets",
                         onPress: ()=> props.nav("Ticket")
                     },
                     {
+                        style:styles.buttons,
+                        checkedColor:globalStyles.colors.black,
+                        uncheckedColor:globalStyles.colors.blue,
                         icon:"wallet",
                         value:"Mi Billetera",
                         label:"Mi Billetera",
