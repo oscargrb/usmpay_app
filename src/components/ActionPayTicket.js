@@ -10,7 +10,7 @@ const ActionPayTicket = props =>{
             marginTop:0
         },
         segButtons:{
-            backgroundColor:globalStyles.colors.white
+            backgroundColor:"transparent"
         },
         buttons:{
             color:globalStyles.colors.blue

@@ -14,14 +14,6 @@ const WalletScreen = props =>{
             <View>
                 <View
                     style={{
-                        elevation: 2,
-                        zIndex: 2
-                    }}
-                >
-                    <Header nav={nav} />
-                </View>
-                <View
-                    style={{
                         elevation: 1,
                         zIndex: 1
                     }}

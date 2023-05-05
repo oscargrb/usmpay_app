@@ -3,9 +3,7 @@ import EncryptedStorage  from "react-native-encrypted-storage"
 const nxu = {
     snxut : (val)=>{
         return new Promise(resolve=>{
-            EncryptedStorage.setItem('nxu', JSON.stringify({
-                tk: val
-            }))
+            EncryptedStorage.setItem('nxu', JSON.stringify(val))
                 .then(()=>{
                     resolve({ok: true})
                 })
@@ -21,7 +19,7 @@ const nxu = {
             EncryptedStorage.getItem('nxu')
                 .then((val)=>{
                     const result = JSON.parse(val)
-                    resolve({ok: true, val:result.tk})
+                    resolve({ok: true, result})
                 }).catch(e=>{
                     resolve({ok: false})
                 })

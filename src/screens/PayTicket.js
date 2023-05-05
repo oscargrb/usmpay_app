@@ -5,6 +5,10 @@ import SelectRuta from "../components/SelectRuta"
 
 const PayTicket = props =>{
 
+    const nav = (ruta)=>{
+        props.navigation.navigate(ruta)
+    }
+
     return(
         <View
             style={{
@@ -12,8 +16,8 @@ const PayTicket = props =>{
                 
             }}
         >
-            <Header />
-            <SelectRuta />
+            
+            <SelectRuta nav={nav} />
         </View>
     )
 }

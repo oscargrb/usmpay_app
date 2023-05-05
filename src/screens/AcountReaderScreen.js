@@ -13,14 +13,14 @@ import ModalFingerPref from "../components/ModalFingerPref"
 import ApiService from "../common/ApiService"
 import TokenTimeout from "../components/tokenTimeout"
 import UserInfoContext from "../context/UserInfoContext"
-import Loader from "../components/Loader"
-import UserService from "../common/UserService"
+import DisplayTicketsReader from "../components/Reader/DisplayTicketsReader"
+import OptionsReader from "../components/Reader/OptionsReader"
+import PaymentsHistoricReader from "../components/Reader/PaymentsHistoricReader"
 
-const AcountScreen = props =>{
+
+const AcountReaderScreen = props =>{
 
     const {infoProfile = userInfo, updateUserInfo} = useContext(UserInfoContext)
-
-    const [loader, setLoader] = useState(false)
 
     const [userInfo, setUserInfo] = useState({
         name:"",
@@ -34,7 +34,7 @@ const AcountScreen = props =>{
     }
 
     useEffect(()=>{
-        setLoader(true)
+
         const sendNxu = async ()=>{
             const auth = await nxu.gnxut()
             const ucred = await Ucred.gUcred()
@@ -50,25 +50,49 @@ const AcountScreen = props =>{
                         user: ucred.result.data.user
                     })
                 }).then(response=>{
+                    
                     response.json().then(data=>{
+                        data.rutaActual = "La California"
                         setUserInfo(data)
                         updateUserInfo(data)
-                        setLoader(false)
                     }).catch(e=>{
                         console.log(e, "error")
-                        setLoader(false)
                     })
                 }).catch(e=>{
                     console.log(e)
-                    setLoader(false)
                 })
 
+                /* setTimeout(()=>{
 
-                
+                }, ) */
             }
         }
 
+        const backAction = ()=>{
+            Alert.alert(
+                'Espera!',
+                'Estas seguro que desea salir?',
+                [
+                    {
+                        text:"Cancelar",
+                        onPress: ()=> null
+                    },
+                    {
+                        text: "Aceptar",
+                        onPress: ()=>nav('Home')
+                        
+                    }
+                ]
+            )
+
+            return true
+        }
+
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction)
+
         sendNxu()
+
+        return ()=> backHandler.remove()
     }, []) 
 
     return(
@@ -100,20 +124,15 @@ const AcountScreen = props =>{
                         
                     }}
                 >
-                    <DisplayTickets balance={userInfo.balance} tickets={userInfo.tickets} />
-                    <ActionPayTicket nav={nav} />
-                    <PaymentsHistoric />
+                    <DisplayTicketsReader  rutaActual={userInfo.rutaActual} tickets={userInfo.tickets} />
+                    <OptionsReader nav={nav} />
+                    <PaymentsHistoricReader />
                     
                 </View>
-                
+                {/* <TokenTimeout /> */}
             </View>
-            {
-                loader?
-                    <Loader />:
-                    <></>
-            }
         </Provider>
     )
 }
 
-export default AcountScreen
+export default AcountReaderScreen

@@ -27,6 +27,11 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: globalStyles.colors.blue
     },
+    otherLogin:{
+        fontSize: 15,
+        color: globalStyles.colors.blue,
+        textDecorationLine:"underline"
+    },
     buttonSend:{
         width:10,
         height:10
@@ -49,7 +54,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const LoginScreen = props=>{
+const LoginCommonUser = props=>{
 
     // NECESITO QUE EL ROL VENGA EN LA RESPUESTA!
     const rol = ApiService.userRol
@@ -59,12 +64,118 @@ const LoginScreen = props=>{
         password: null
     })
 
+    const [fingerprintEnable, setFingerprintEnable] = useState(false)
+
     const [loader, setLoader] = useState(false)
 
     useEffect(()=>{
-        //setLoader(true)
-        
+        setLoader(true)
+
+        TouchID.isSupported().then(biometryType=>{
+            //Alert.alert('biometry works!!!!!!')
+            //Alert.alert(biometryType.toString())
+            setFingerprintEnable(true)
+        }).catch(error=>{
+            //Alert.alert(error.code.toString())
+            setFingerprintEnable(false)
+        })
+
+        /* const fingerPref = async ()=>{
+            const fpref = await Ucred.gFingerPref()
+
+            if(fpref.ok){
+                if(fpref.result){
+                    setFingerprintEnable(true)
+                }
+            }
+
+            setLoader(false)
+        } */
+
+        const checkDataUser = async ()=>{
+            const temp = await Ucred.gUcred()
+
+            if(temp.ok && temp.result){
+                onChageField("document", temp.result.data.user)
+            }
+
+            setLoader(false)
+        }
+
+        checkDataUser()
+        //fingerPref()
     }, [])
+
+    const loginWithFinger = ()=>{
+        TouchID.authenticate('Para iniciar sesion coloca tu huella dactilar',
+            {
+                title:"Coloca tu huella"
+            }
+        )
+            .then(async sucess=>{
+                setLoader(true)
+
+                const cred = await Ucred.gUcred()
+
+                if(cred.ok){
+                    
+
+                    fetch(`${ApiService.url}/auth`,{
+                        method:"POST",
+                        headers:{
+                            //'Content-Type': 'application/x-www-form-urlencoded'
+                            'Content-Type': 'application/json'
+                        },
+                        body:JSON.stringify({
+                            user:cred.result.data.user,
+                            pwd: cred.result.data.pwd
+                        })
+                    }).then(response=>{
+                        
+                        if(response.status == 200){
+                            //aca esta el sesion token
+                            response.json().then(async data=>{
+                                
+                                //aca el access token
+                                if(data.accessToken){
+                                    const result = await nxu.snxut({
+                                        tkn: data.accessToken,
+                                        sessionToken: response.headers.map["set-cookie"],
+                                        timeout: Number(response.headers.map['keep-alive'].replaceAll(/\D+/g, ""))
+                                    })
+
+                                    if(result.ok){
+                                        setLoader(false)
+                                        //Alert.alert('Login sucessfull!')
+                                        
+                                        rol == 2001? 
+                                            props.navigation.navigate('Acount'):
+                                            props.navigation.navigate('AcountReader')
+                                    }
+                                    
+                                }else{
+                                    setLoader(false)
+                                    Alert.alert('Bad Login!')
+                                }
+                            })
+                        }else{
+                            setLoader(false)
+                            Alert.alert('Bad Login!')
+                        }
+                        
+                    }).catch(e=>{
+                        setLoader(false)
+                        Alert.alert('Bad Login!')
+                        console.log(e)
+                    }) 
+                }
+            })
+            .catch(error=>{
+                setLoader(false)
+                Alert.alert('Authetication fail!')
+                console.log(error)
+            })
+    }
 
     const onSubmitForm = (dataFinger)=>{
         Keyboard.dismiss()
@@ -174,6 +285,7 @@ const LoginScreen = props=>{
                 <TextInput
                     onChangeText={text => onChageField("document", text)}
                     value={registerData.document}
+                    disabled
                     inputMode='numeric'
                     label={
                         <Text
@@ -233,6 +345,17 @@ const LoginScreen = props=>{
             </View>
 
             <View
+                style={styles.TextContainer}
+            >
+                <Text
+                    style={styles.otherLogin}
+                    onPress={()=> props.navigation.navigate("Login")}
+                >
+                    Quieres iniciar con otra cuenta?
+                </Text>
+            </View>
+
+            <View
                 style={styles.buttonSendContainer} 
             >
                 <Button
@@ -246,6 +369,35 @@ const LoginScreen = props=>{
             </View>
 
             {
+                fingerprintEnable?
+                <View
+                    style={styles.buttonSendContainer} 
+                >
+                    <TouchableHighlight 
+                        onPress = {loginWithFinger}
+                        underlayColor={"transparent"}
+                        
+                    >
+                        <Image
+                            style={styles.fingerImage} 
+                            source={
+                                require('../assets/logoFinger2.png')
+                            }
+                            
+                        />
+                        
+                    </TouchableHighlight>
+                    <Text
+                        style={styles.fingerText}
+                        
+                    >
+                        Ingresa con tu huella
+                    </Text>
+                </View>:
+                <></>
+            }
+
+            {
                 loader?
                     <Loader />:
                     <></>
@@ -254,4 +406,4 @@ const LoginScreen = props=>{
     )
 }
 
-export default LoginScreen
+export default LoginCommonUser

@@ -1,8 +1,13 @@
 import { Card, Text, IconButton } from 'react-native-paper'
 import { StyleSheet, View } from 'react-native'
-import globalStyles from '../common/globalStyles'
+import {useState, useContext, useEffect} from "react"
+import globalStyles from '../../common/globalStyles'
+import UserInfoContext from '../../context/UserInfoContext'
 
-const DisplayTickets = props =>{
+
+const DisplayTicketsReader = props =>{
+
+    const {userInfo} = useContext(UserInfoContext)
 
     const styles = StyleSheet.create({
         container:{
@@ -45,7 +50,7 @@ const DisplayTickets = props =>{
                 style={styles.card}
             >
                 <Card.Title 
-                    title="Saldo Billetera"
+                    title="Ruta Actual a Cobrar"
                     titleStyle = {styles.CardTitle} 
                 />
                 <Card.Content
@@ -54,12 +59,14 @@ const DisplayTickets = props =>{
                     <View
                         style={styles.ticketsDisp}
                     >   
-                        <Text style={styles.CardContentTickets} >{props.balance} Bs.</Text>
+                        <Text style={styles.CardContentTickets} >
+                            {userInfo.rutaActual}
+                        </Text>
                     </View>
                     
                 </Card.Content>
                 <Card.Title 
-                    title={"Tickets Disponibles"}
+                    title={"Tickets Cobrados Hoy"}
                     titleStyle = {styles.CardTitle} 
                 />
                 <Card.Content
@@ -161,4 +168,4 @@ const DisplayTickets = props =>{
     )
 }
 
-export default DisplayTickets
+export default DisplayTicketsReader

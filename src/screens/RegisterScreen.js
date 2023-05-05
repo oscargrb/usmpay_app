@@ -1,4 +1,4 @@
-import {  Text, View, StyleSheet, Alert } from "react-native";
+import {  Text, View, StyleSheet, Alert, Keyboard } from "react-native";
 import { TextInput, Button } from "react-native-paper"
 import {useState} from "react"
 import globalStyles from "../common/globalStyles";
@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         padding: 20,
-        backgroundColor: globalStyles.colors.white,
+        backgroundColor: globalStyles.colors.grey,
     },
     TextContainer:{  
         marginBottom: 10
@@ -50,6 +50,7 @@ const RegisterScreen = props=>{
     const [loader, setLoader] = useState(false)
 
     const onSubmitForm = ()=>{
+        Keyboard.dismiss()
         for(let element of Object.keys(registerData)) {
             if(!registerData[element]){
                 return(
@@ -64,7 +65,7 @@ const RegisterScreen = props=>{
             )
         }
         
-        fetch(`${ApiService.url}/auth`,{
+        fetch(`${ApiService.url}/register`,{
             method:"POST",
             headers:{
                 //'Content-Type': 'application/x-www-form-urlencoded'
@@ -78,13 +79,13 @@ const RegisterScreen = props=>{
                 phone: registerData.phone
             })
         }).then(response=>{
-            console.log(response)
+            
             setLoader(false)
             if(response.ok){
                 response.json().then( async data=>{
-                    console.log(data)
+                    
                     const fpref = await Ucred.cFingPref()
-                    console.log("fpref create: ",fpref.ok)
+                    
                     props.navigation.navigate('Login')
                 })
             }else{
@@ -141,14 +142,28 @@ const RegisterScreen = props=>{
                 <TextInput
                     onChangeText={text => onChageField("document", text)}
                     inputMode='numeric'
-                    label="Número de documento *"
-                    mode="outlined"
+                    
+                    label={
+                        <Text
+                            style={{backgroundColor:"white", color:"black"}}
+                        >
+                            Número de documento *
+                        </Text>
+                    }
+                    
                     selectionColor="#00c"
                     outlineColor={globalStyles.colors.blue}
                     outlineStyle={{
                         borderWidth:2
                     }}
                     activeOutlineColor="#007"
+
+                    backgroundColor={globalStyles.colors.white}
+                    
+                    mode="flat"
+                    contentStyle={{color:globalStyles.colors.black}}
+                    underlineColor='transparent'
+                    activeUnderlineColor='transparent'
                 /> 
             </View>
 
@@ -157,14 +172,28 @@ const RegisterScreen = props=>{
             >
                 <TextInput
                     onChangeText={text => onChageField("mail", text)}
-                    label="Correo Electrónico *"
-                    mode="outlined"
+                    
+                    label={
+                        <Text
+                            style={{backgroundColor:"white", color:"black"}}
+                        >
+                            Correo Electrónico *
+                        </Text>
+                    }
+                    
                     selectionColor="#00c"
                     outlineColor={globalStyles.colors.blue}
                     outlineStyle={{
                         borderWidth:2
                     }}
                     activeOutlineColor="#007"
+
+                    backgroundColor={globalStyles.colors.white}
+                    
+                    mode="flat"
+                    contentStyle={{color:globalStyles.colors.black}}
+                    underlineColor='transparent'
+                    activeUnderlineColor='transparent'
                 /> 
             </View>
 
@@ -174,14 +203,28 @@ const RegisterScreen = props=>{
                 <TextInput
                     onChangeText={text => onChageField("phone", text)}
                     inputMode='numeric'
-                    label="Número de teléfono *"
-                    mode="outlined"
+                    
+                    label={
+                        <Text
+                            style={{backgroundColor:"white", color:"black"}}
+                        >
+                            Número de teléfono *
+                        </Text>
+                    }
+                    
                     selectionColor="#00c"
                     outlineColor={globalStyles.colors.blue}
                     outlineStyle={{
                         borderWidth:2
                     }}
                     activeOutlineColor="#007"
+
+                    backgroundColor={globalStyles.colors.white}
+                    
+                    mode="flat"
+                    contentStyle={{color:globalStyles.colors.black}}
+                    underlineColor='transparent'
+                    activeUnderlineColor='transparent'
                 /> 
             </View>
 
@@ -190,14 +233,28 @@ const RegisterScreen = props=>{
             >
                 <TextInput
                     onChangeText={text => onChageField("password", text)}
-                    mode="outlined"
+                    label={
+                        <Text
+                            style={{backgroundColor:"white", color:"black"}}
+                        >
+                            Crear clave de acceso *
+                        </Text>
+                    }
+                    
                     selectionColor="#00c"
                     outlineColor={globalStyles.colors.blue}
                     outlineStyle={{
                         borderWidth:2
                     }}
                     activeOutlineColor="#007"
-                    label="Crear clave de acceso *"
+
+                    backgroundColor={globalStyles.colors.white}
+                    
+                    mode="flat"
+                    contentStyle={{color:globalStyles.colors.black}}
+                    underlineColor='transparent'
+                    activeUnderlineColor='transparent'
+                    
                     secureTextEntry={true}
                 /> 
             </View>
@@ -207,14 +264,27 @@ const RegisterScreen = props=>{
             >
                 <TextInput
                     onChangeText={text => onChageField("passwordConfirm", text)}
-                    mode="outlined"
+                    label={
+                        <Text
+                            style={{backgroundColor:"white", color:"black"}}
+                        >
+                            Confirmar clave de acceso *
+                        </Text>
+                    }
+                    
                     selectionColor="#00c"
                     outlineColor={globalStyles.colors.blue}
                     outlineStyle={{
                         borderWidth:2
                     }}
                     activeOutlineColor="#007"
-                    label="Confirmar clave de acceso *"
+
+                    backgroundColor={globalStyles.colors.white}
+                    
+                    mode="flat"
+                    contentStyle={{color:globalStyles.colors.black}}
+                    underlineColor='transparent'
+                    activeUnderlineColor='transparent'
                     secureTextEntry={true}
                 /> 
             </View>
@@ -226,6 +296,7 @@ const RegisterScreen = props=>{
                     buttonColor={globalStyles.colors.blue}
                     mode="contained"
                     onPress={onSubmitForm}
+                    textColor={globalStyles.colors.white}
                 >
                     Registrarme
                 </Button>
