@@ -24,8 +24,8 @@ const ActionPayTicket = props =>{
 
             <SegmentedButtons
                 style={styles.segButtons}
-                density="small"
-                onValueChange={()=> console.log("sad")} 
+                density="small" 
+                onValueChange={()=>true}
                 buttons={[
                     {
                         style:styles.buttons,

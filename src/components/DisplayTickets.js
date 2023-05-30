@@ -1,8 +1,16 @@
 import { Card, Text, IconButton } from 'react-native-paper'
 import { StyleSheet, View } from 'react-native'
+import {useContext} from 'react'
 import globalStyles from '../common/globalStyles'
+import UserInfoContext from '../context/UserInfoContext'
+import ApiService from '../common/ApiService'
+import RutasContext from '../context/RutasContext'
 
 const DisplayTickets = props =>{
+
+    const {Rutas} = useContext(RutasContext)
+
+    const {userInfo} = useContext(UserInfoContext)
 
     const styles = StyleSheet.create({
         container:{
@@ -51,12 +59,23 @@ const DisplayTickets = props =>{
                 <Card.Content
                     style={styles.tipoTicketContainer}
                 >
+                    
                     <View
                         style={styles.ticketsDisp}
                     >   
-                        <Text style={styles.CardContentTickets} >{props.balance} Bs.</Text>
+                        <Text style={styles.CardContentTickets} >{userInfo.balance} Bs.</Text>
                     </View>
-                    
+                    <IconButton 
+                        icon={"refresh"}
+                        iconColor={globalStyles.colors.blue}
+                        size={24}
+                        style={{
+                            alignSelf:"center",
+                            margin:-10,
+                            padding:0
+                        }}
+                        onPress={()=> props.nav("Preload")}
+                    />
                 </Card.Content>
                 <Card.Title 
                     title={"Tickets Disponibles"}
@@ -65,95 +84,34 @@ const DisplayTickets = props =>{
                 <Card.Content
                     style={styles.tipoTicketContainer}
                 >
-        
-                    <View
-                        style={styles.ticketsDisp}
-                    >
-                        <IconButton 
-                            icon={"ticket"}
-                            mode="contained"
-                            containerColor='#b00'
-                            iconColor='#fff'
-                            size={20}
-                            style={{
-                                alignSelf:"center"
-                            }}
-                        />
-                        <Text style={styles.CardContentTickets} >
-                            {
-                                props.tickets.length > 0?
-                                    2:
-                                    0
-                            }
-                        </Text>
-                        
-                    </View>
-                    <View
-                        style={styles.ticketsDisp}
-                    >   
-                        <IconButton
-                            containerColor='#0b0'
-                            iconColor='#fff'
-                            size={20}
-                            style={{
-                                alignSelf:"center"
-                            }} 
-                            icon={"ticket"}
-                            mode="contained"
-                        />
-                        <Text style={styles.CardContentTickets} >
-                            {
-                                props.tickets.length > 0?
-                                    2:
-                                    0
-                            }
-                        </Text>
-                        
-                    </View>
-                    <View
-                        style={styles.ticketsDisp}
-                    >   
-                        <IconButton
-                            containerColor='#00b'
-                            iconColor='#fff'
-                            size={20}
-                            style={{
-                                alignSelf:"center"
-                            }} 
-                            icon={"ticket"}
-                            mode="contained"
-                        />
-                        <Text style={styles.CardContentTickets} >
-                            {
-                                props.tickets.length > 0?
-                                    2:
-                                    0
-                            }
-                        </Text>
-                        
-                    </View>
-                    <View
-                        style={styles.ticketsDisp}
-                    >   
-                        <IconButton
-                            containerColor='#bb0'
-                            iconColor='#fff'
-                            size={20}
-                            style={{
-                                alignSelf:"center"
-                            }} 
-                            icon={"ticket"}
-                            mode="contained"
-                        />
-                        <Text style={styles.CardContentTickets} >
-                            {
-                                props.tickets.length > 0?
-                                    2:
-                                    0
-                            }
-                        </Text>
-                        
-                    </View>
+                    {
+                        Rutas.map(i=>{
+                            return(
+                                <View
+                                    style={styles.ticketsDisp}
+                                    key={i.id}
+                                >
+                                    <IconButton 
+                                        icon={"ticket"}
+                                        mode="contained"
+                                        containerColor={i.color}
+                                        iconColor='#fff'
+                                        size={20}
+                                        style={{
+                                            alignSelf:"center"
+                                        }}
+                                    />
+                                    <Text style={styles.CardContentTickets} >
+                                        {userInfo.tickets?
+                                            userInfo.tickets.filter(ticket=> ticket.ruta_id == i.id).length:
+                                            0
+                                        }
+                                    </Text>
+                                    
+                                </View>
+                            )
+                        })
+                    }
                     
                 </Card.Content>
             </Card>

@@ -18,58 +18,11 @@ import UserService from "../common/UserService"
 
 const AcountScreen = props =>{
 
-    const {infoProfile = userInfo, updateUserInfo} = useContext(UserInfoContext)
-
     const [loader, setLoader] = useState(false)
-
-    const [userInfo, setUserInfo] = useState({
-        name:"",
-        balance:"0.00",
-        email:"",
-        tickets:[]
-    })
 
     const nav = screen =>{
         props.navigation.navigate(screen)
     }
-
-    useEffect(()=>{
-        setLoader(true)
-        const sendNxu = async ()=>{
-            const auth = await nxu.gnxut()
-            const ucred = await Ucred.gUcred()
-
-            if(auth.ok){ 
-                fetch(`${ApiService.url}/info`, {
-                    method:"POST",
-                    headers:{
-                        "Authorization": `Bearer ${auth.result.tkn}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        user: ucred.result.data.user
-                    })
-                }).then(response=>{
-                    response.json().then(data=>{
-                        setUserInfo(data)
-                        updateUserInfo(data)
-                        setLoader(false)
-                    }).catch(e=>{
-                        console.log(e, "error")
-                        setLoader(false)
-                    })
-                }).catch(e=>{
-                    console.log(e)
-                    setLoader(false)
-                })
-
-
-                
-            }
-        }
-
-        sendNxu()
-    }, []) 
 
     return(
         <Provider
@@ -83,14 +36,7 @@ const AcountScreen = props =>{
                     overflow:"scroll"
                 }}
             >
-                {/* <View
-                    style={{
-                        elevation: 2,
-                        zIndex: 2
-                    }}
-                >
-                    <Header nav={nav}  />
-                </View> */}
+                
                 <View
                     style={{
                         elevation: 1,
@@ -100,9 +46,9 @@ const AcountScreen = props =>{
                         
                     }}
                 >
-                    <DisplayTickets balance={userInfo.balance} tickets={userInfo.tickets} />
+                    <DisplayTickets nav={nav} />
                     <ActionPayTicket nav={nav} />
-                    <PaymentsHistoric />
+                    <PaymentsHistoric nav={nav} />
                     
                 </View>
                 

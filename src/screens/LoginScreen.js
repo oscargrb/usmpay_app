@@ -61,10 +61,7 @@ const LoginScreen = props=>{
 
     const [loader, setLoader] = useState(false)
 
-    useEffect(()=>{
-        //setLoader(true)
-        
-    }, [])
+    
 
     const onSubmitForm = (dataFinger)=>{
         Keyboard.dismiss()
@@ -110,9 +107,7 @@ const LoginScreen = props=>{
                                 pwd: registerData.password 
                             })
                             
-                            rol == 2001? 
-                                props.navigation.navigate('Acount'):
-                                props.navigation.navigate('AcountReader')
+                            props.navigation.navigate('Preload')
                         }
                         
                     }else{

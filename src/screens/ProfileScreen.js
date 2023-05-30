@@ -87,7 +87,7 @@ const ProfileScreen = props =>{
                     <Text
                         style={styles.content}
                     >
-                        {userInfo.name}
+                        {userInfo.document}
                     </Text>
                 </View>
                 <Divider 
@@ -106,7 +106,7 @@ const ProfileScreen = props =>{
                     <Text
                         style={styles.content}
                     >
-                        {userInfo.email}
+                        {userInfo.correo}
                     </Text>
                 </View>
                 <Divider 
@@ -125,7 +125,7 @@ const ProfileScreen = props =>{
                     <Text
                         style={styles.content}
                     >
-                        04263151271
+                        {userInfo.telefono}
                     </Text>
                 </View>
                 <Divider 
@@ -144,7 +144,11 @@ const ProfileScreen = props =>{
                     <Text
                         style={styles.content}
                     >
-                        Usuario
+                        {
+                            userInfo.rol == 2001?
+                                "Usuario":
+                                "Personal del Autobus"
+                        }
                     </Text>
                 </View>
             </View> 

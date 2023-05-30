@@ -1,37 +1,20 @@
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import { View, StyleSheet, Dimensions } from "react-native"
 import { Button, Dialog, IconButton, Portal, RadioButton, SegmentedButtons, Text } from "react-native-paper"
 import globalStyles from "../../common/globalStyles"
 import UserInfoContext from "../../context/UserInfoContext"
+import RutasContext from "../../context/RutasContext"
 
-const rutaList = [
-    {
-        name:"La California",
-        tarifa:9,
-        id:1
-    },
-    {
-        name:"Guatire / Guarenas",
-        tarifa:25,
-        id:2
-    },
-    {
-        name:"Plaza Venezuela",
-        tarifa:15,
-        id:3
-    },
-    {
-        name:"Los Teques",
-        tarifa:30,
-        id:4
-    },
-]
 
 const OptionsReader = props =>{
+
+    const {Rutas} = useContext(RutasContext)
 
     const [modalSelectRuta, SetModalSelectRuta] = useState(false)
     const [checked, setChecked] = useState({});
     const {userInfo, updateUserInfo} = useContext(UserInfoContext)
+
+    
 
     const openModal = () => {
         SetModalSelectRuta(true)
@@ -43,7 +26,7 @@ const OptionsReader = props =>{
     const changeRutaActual = ()=>{
         let newUserInfo = {}
         Object.assign(newUserInfo, userInfo)
-        newUserInfo.rutaActual = checked.name
+        newUserInfo.rutaActual = checked
         updateUserInfo(newUserInfo)
     }
 
@@ -110,21 +93,21 @@ const OptionsReader = props =>{
                         <Dialog.Content>
 
                             {
-                                rutaList.map(i=>{
+                                Rutas.map(i=>{
                                     return(
                                         <View
                                             style={styles.itemRuta}
                                             key={i.id}
                                         >
                                             <RadioButton 
-                                                value={i.name}
-                                                status={checked.name == i.name? 'checked': 'unchecked'}
+                                                value={i.nbRuta}
+                                                status={checked.nbRuta == i.nbRuta? 'checked': 'unchecked'}
                                                 onPress={()=> {
                                                     setChecked(i)
                                                     
                                                 }}
                                             />
-                                            <Text>{i.name}</Text>
+                                            <Text>{i.nbRuta}</Text>
                                         </View>
                                     )
                                 })
@@ -135,8 +118,10 @@ const OptionsReader = props =>{
                         <Dialog.Actions>
                             <Button 
                                 onPress={()=>{
-                                    changeRutaActual()
-                                    closeModal()
+                                    if(checked.nbRuta){
+                                        changeRutaActual()
+                                        closeModal()
+                                    }
                                 }}
                             >
                                 Aceptar

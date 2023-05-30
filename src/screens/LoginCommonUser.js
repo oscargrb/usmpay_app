@@ -148,9 +148,7 @@ const LoginCommonUser = props=>{
                                         setLoader(false)
                                         //Alert.alert('Login sucessfull!')
                                         
-                                        rol == 2001? 
-                                            props.navigation.navigate('Acount'):
-                                            props.navigation.navigate('AcountReader')
+                                        props.navigation.navigate('Preload')
                                     }
                                     
                                 }else{
@@ -221,9 +219,7 @@ const LoginCommonUser = props=>{
                                 pwd: registerData.password 
                             })
                             
-                            rol == 2001? 
-                                props.navigation.navigate('Acount'):
-                                props.navigation.navigate('AcountReader')
+                            props.navigation.navigate('Preload')
                         }
                         
                     }else{

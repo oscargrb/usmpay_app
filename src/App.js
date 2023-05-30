@@ -25,8 +25,9 @@ import NFCReadScreen from "./screens/Reader/NFCReadScreen"
 import NFCUserScreen from "./screens/User/NFCUserScreen"
 import Loader from "./components/Loader"
 import TokenTimeout from "./components/tokenTimeout"
-
-
+import HistoricUser from "./screens/User/HistoricUser"
+import Preload from "./screens/Preload"
+import RutasContext from "./context/RutasContext"
 
 
 const Stack = createNativeStackNavigator()
@@ -34,13 +35,32 @@ const Stack = createNativeStackNavigator()
 const App = props=>{
     
     const [userInfo, setUserInfo] = React.useState({})
+    const [Rutas, setRutas] = React.useState([])
+
+    const updateRutas = (data)=>{
+        setRutas(data)
+    }
 
     const updateUserInfo = (data) =>{
         
         setUserInfo(data)
     }
 
+    const config = {
+        gestureDirection: "horizontal",
+        animation: 'spring',
+        config: {
+            stiffness: 1000,
+            damping: 500,
+            mass: 3,
+            overshootClamping: true,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 0.01,
+        },
+    };
+
     return(
+        <RutasContext.Provider value={{Rutas, updateRutas}} >
         <UserInfoContext.Provider value={{userInfo, updateUserInfo}}>
         <Provider>
             {/* <TokenTimeout /> */}
@@ -48,7 +68,19 @@ const App = props=>{
                 <Stack.Navigator>
                     <Stack.Screen name="Home" component={HomeScreen}
                         options={{
-                            headerShown:false
+                            headerShown:false,
+                            animation:"flip",
+                            gestureDirection:"vertical"
+                        }}
+
+                    />
+                    <Stack.Screen name="Preload" component={Preload}
+                        options={{
+                            headerShown:false,
+                            transitionSpec: {
+                                open: config,
+                                close: config,
+                            },
                         }}
 
                     />
@@ -56,7 +88,11 @@ const App = props=>{
                     <Stack.Screen name="Register" component={RegisterScreen}
                         options={{
                             title:"",
-                            headerShown:false
+                            headerShown:false,
+                            transitionSpec: {
+                                open: config,
+                                close: config,
+                            },
                             
                         }}
                     />
@@ -64,14 +100,20 @@ const App = props=>{
                     <Stack.Screen name="Login" component={LoginScreen}
                         options={{
                             title:"",
-                            headerShown:false
+                            headerShown:false,
+                            transitionSpec: {
+                                open: config,
+                                close: config,
+                            },
                             
                         }}
                     />
                     <Stack.Screen name="CommonLogin" component={LoginCommonUser}
                         options={{
                             title:"",
-                            headerShown:false
+                            headerShown:false,
+                            animation:"flip",
+                            gestureDirection:"vertical"
                             
                         }}
                     />
@@ -133,6 +175,13 @@ const App = props=>{
                         }}
                     />
                     <Stack.Screen 
+                        name="HistoricUser" 
+                        component={HistoricUser}
+                        options={{
+                            header: (props)=> <Header nav={props.navigation.navigate} />
+                        }}
+                    />
+                    <Stack.Screen 
                         name="Sorry" 
                         component={SorryScreen}
                         options={{
@@ -154,6 +203,7 @@ const App = props=>{
         </Provider>
         
         </UserInfoContext.Provider>
+        </RutasContext.Provider>
     )
 }
 

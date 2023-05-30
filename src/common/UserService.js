@@ -1,4 +1,4 @@
-import TokenTimeout from "../components/tokenTimeout"
+import Ucred from "../context/Ucred"
 
 const { default: nxu } = require("../context/Nxu")
 const { default: ApiService } = require("./ApiService")

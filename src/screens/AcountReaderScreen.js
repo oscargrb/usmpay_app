@@ -20,81 +20,12 @@ import PaymentsHistoricReader from "../components/Reader/PaymentsHistoricReader"
 
 const AcountReaderScreen = props =>{
 
-    const {infoProfile = userInfo, updateUserInfo} = useContext(UserInfoContext)
-
-    const [userInfo, setUserInfo] = useState({
-        name:"",
-        balance:"0.00",
-        email:"",
-        tickets:[]
-    })
 
     const nav = screen =>{
         props.navigation.navigate(screen)
     }
 
-    useEffect(()=>{
-
-        const sendNxu = async ()=>{
-            const auth = await nxu.gnxut()
-            const ucred = await Ucred.gUcred()
-
-            if(auth.ok){ 
-                fetch(`${ApiService.url}/info`, {
-                    method:"POST",
-                    headers:{
-                        "Authorization": `Bearer ${auth.result.tkn}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        user: ucred.result.data.user
-                    })
-                }).then(response=>{
-                    
-                    response.json().then(data=>{
-                        data.rutaActual = "La California"
-                        setUserInfo(data)
-                        updateUserInfo(data)
-                    }).catch(e=>{
-                        console.log(e, "error")
-                    })
-                }).catch(e=>{
-                    console.log(e)
-                })
-
-                /* setTimeout(()=>{
-
-                }, ) */
-            }
-        }
-
-        const backAction = ()=>{
-            Alert.alert(
-                'Espera!',
-                'Estas seguro que desea salir?',
-                [
-                    {
-                        text:"Cancelar",
-                        onPress: ()=> null
-                    },
-                    {
-                        text: "Aceptar",
-                        onPress: ()=>nav('Home')
-                        
-                    }
-                ]
-            )
-
-            return true
-        }
-
-        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction)
-
-        sendNxu()
-
-        return ()=> backHandler.remove()
-    }, []) 
-
+    
     return(
         <Provider
             
@@ -124,7 +55,7 @@ const AcountReaderScreen = props =>{
                         
                     }}
                 >
-                    <DisplayTicketsReader  rutaActual={userInfo.rutaActual} tickets={userInfo.tickets} />
+                    <DisplayTicketsReader  />
                     <OptionsReader nav={nav} />
                     <PaymentsHistoricReader />
                     

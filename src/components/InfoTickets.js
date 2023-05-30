@@ -1,42 +1,38 @@
 import { View, StyleSheet } from "react-native"
 import { Button, IconButton, Modal, Portal, Text } from "react-native-paper"
 import globalStyles from "../common/globalStyles"
-
-const tickets = [
-    {
-        id:0,
-        ruta:"La California",
-        color: "#b00"
-    },
-    {
-        id:1,
-        ruta:"Plaza Venezuela",
-        color: "#0b0"
-    },
-    {
-        id:2,
-        ruta:"Guatire / Guarenas",
-        color: "#00b"
-    },
-    {
-        id:3,
-        ruta:"Los Teques",
-        color: "#bb0"
-    },
-]
+import {useContext, useEffect, useState} from 'react'
+import RutasContext from "../context/RutasContext"
 
 const InfoTickets = props =>{
 
+    const [allRutas, setAllRutas] = useState([]) 
+
+    const {Rutas} = useContext(RutasContext)
+
+    useEffect(()=>{
+        setAllRutas(Rutas)
+        console.log(allRutas)
+    }, [])
+
     const styles = StyleSheet.create({
-        
+        containerTitles:{
+
+            height:80
+        },
+        container:{
+            flex:1,
+
+        },
         modal:{
             backgroundColor: globalStyles.colors.white,
             padding:30,
             marginTop: 100,
             marginBottom:100,
             margin:50,
-            justifyContent:"flex-start",
-            flex:1,
+            justifyContent:"space-around",
+            alignItems:"center",
+            
             height:500,
             borderRadius: 10
         },
@@ -50,7 +46,7 @@ const InfoTickets = props =>{
             color:globalStyles.colors.black
         },
         buttonContainer:{
-            marginTop:120,
+            
             justifyContent:"center"
         }
     })
@@ -64,18 +60,18 @@ const InfoTickets = props =>{
                 visible={true}
                 style={styles.modal}
             >
-                <Text style={styles.title}>Información</Text>
-
-                <Text style={styles.subtitle}>El color de cada Ticket indica la ruta</Text>
-
                 <View
-                    style={{
-                        marginTop:20,
-                        justifyContent:"center"
-                    }}
+                    style={styles.containerTitles}
+                >
+                    <Text style={styles.title}>Información</Text>
+                    <Text style={styles.subtitle}>El color de cada Ticket indica la ruta</Text>
+                </View>
+            
+                <View
+                    style={styles.container}
                 >
                     {
-                        tickets.map(i=>{
+                        allRutas.map(i=>{
                             return(
                                 <View
                                     style={{
@@ -101,7 +97,7 @@ const InfoTickets = props =>{
                                             color:globalStyles.colors.black
                                         }}
                                     >
-                                        {i.ruta}
+                                        {i.nbRuta}
                                     </Text>
                                 </View>
                             )

@@ -3,38 +3,14 @@ import { Button, Card, IconButton, Text } from "react-native-paper"
 import globalStyles from "../common/globalStyles"
 import {useContext} from 'react'
 import UserInfoContext from "../context/UserInfoContext"
+import RutasContext from "../context/RutasContext"
 
-
-const rutas = [
-    {
-        id:0,
-        ruta: "La California",
-        color:"#b00",
-        urlImage:"https://http2.mlstatic.com/D_NQ_NP_767473-MLV50739669349_072022-W.jpg"
-    },
-    {
-        id:1,
-        ruta: "Plaza Venezuela",
-        color:"#0b0",
-        urlImage:"https://guiaccs.com/wp-content/uploads/2017/09/Plaza-Venezuela_DDN-DESTACADA.jpg"
-    },
-    {
-        id:2,
-        ruta: "Guatire / Guarenas",
-        color:"#00b",
-        urlImage:"https://www.descifrado.com/wp-content/uploads/2020/06/65422348.jpg"
-    },
-    {
-        id:3,
-        ruta: "Los Teques",
-        color:"#bb0",
-        urlImage:"https://alcaldiadeguaicaipuro.gob.ve/wp-content/uploads/2022/08/fotocatedraldelosteques-1280x720-1.jpg"
-    }
-]
 
 const SelectRuta = props =>{
 
+    const {Rutas} = useContext(RutasContext)
     const {userInfo, updateUserInfo} = useContext(UserInfoContext)
+    console.log(userInfo.tickets.filter(i=> i.ruta_id == 1).length)
 
     const selectRuta = (ruta)=>{
         let newUserInfo = {}
@@ -86,7 +62,7 @@ const SelectRuta = props =>{
                 
             >
                 {
-                    rutas.map(i=>{
+                    Rutas.map(i=>{
                         return(
                             <View
                                 style={{
@@ -99,8 +75,8 @@ const SelectRuta = props =>{
                             >
                                 <Pressable
                                     onPress={()=>{
-                                        userInfo.tickets[i.ruta] && userInfo.tickets[i.ruta] > 0?
-                                        selectRuta(i.ruta):
+                                        userInfo.tickets.length > 0 && userInfo.tickets.filter(j=> j.ruta_id == i.id).length > 0?
+                                        selectRuta(i.nbRuta):
                                         Alert.alert("Error", "No posees tickets suficientes para esta ruta")
                                     }}
                                 >
@@ -133,7 +109,7 @@ const SelectRuta = props =>{
                                                 
                                             }}
                                         >
-                                            {i.ruta}
+                                            {i.nbRuta}
                                         </Text>
 
                                         <Button 
@@ -146,8 +122,8 @@ const SelectRuta = props =>{
                                             mode="contained"    
                                         >
                                             {
-                                                userInfo.tickets[i.ruta]?
-                                                userInfo.tickets[i.ruta]:
+                                                userInfo.tickets.filter(j=> j.ruta_id == i.id).length > 0?
+                                                userInfo.tickets.filter(j=> j.ruta_id == i.id).length:
                                                 "0"
                                             }
                                         </Button>

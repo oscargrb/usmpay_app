@@ -1,13 +1,16 @@
 import { Card, Text, TextInput, Button, ActivityIndicator } from 'react-native-paper'
 import { StyleSheet, View, Alert } from 'react-native'
-import {useState} from "react"
+import {useState, useContext} from "react"
 import Loader from './Loader'
 import globalStyles from '../common/globalStyles'
+import ApiService from '../common/ApiService'
+import UserInfoContext from '../context/UserInfoContext'
 
 const AddToWallet = props =>{
 
     const [refNumb, setRefNumb] = useState('')
     const [loader, setLoader] = useState(false)
+    const {userInfo} = useContext(UserInfoContext)
 
     const onSubmitForm = ()=>{
         if(!refNumb){
@@ -18,31 +21,37 @@ const AddToWallet = props =>{
 
         setLoader(true)
 
-        
-        fetch("http://192.168.1.104:3000/getPayment?id=" + refNumb, {
-            method:"GET",
+        fetch(`${ApiService.urlBankAutomate}/consult`, {
+            method:"POST",
             headers:{
-                "Content-Type":"application/json",
-                Accept: "application/json"
-            }
-        }).then(reponse=>{
-            
-            reponse.json().then(data=>{
-                setLoader(false)
-                return(Alert.alert("fetch response", JSON.stringify(data), [
-                    {
-                        text:"Continuar",
-                        onPress: ()=> props.nav('Acount')
-                    }
-                ]))
-            }).catch(e=>{
-            
-                setLoader(false)
-                return(Alert.alert("fetch response", JSON.stringify(e)))
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({
+                document: userInfo.document,
+                ref: refNumb
             })
+        }).then(reponse=>{
+            setLoader(false)
+            console.log(reponse)
+            if(reponse.status == 200){
+                reponse.json().then(data=>{
+                    console.log(data)
+                    if(data.ok){
+                        Alert.alert("Informacion", "La operacion se realizó de forma exitosa", [
+                            {text: 'OK', onPress: () => props.nav('Acount')}
+                        ])
+                    }else{
+                        Alert.alert("Informacion", "Error: " + data.info)
+                    }
+                })
+            }else{
+                Alert.alert("Informacion", "Error: operacion termino de forma incorrecta")
+            }
         }).catch(e=>{
             setLoader(false)
-            return(Alert.alert("fetch error", "buuu dont work!"))
+            Alert.alert("Informacion", "Error: operacion termino de forma incorrecta", [
+                {text: 'OK', onPress: () => props.nav('Acount')}
+            ])
         })
 
     }
@@ -150,7 +159,7 @@ const AddToWallet = props =>{
                     <TextInput
                         value={refNumb}
                         onChangeText={(val) => onChageField(val)}
-                        
+                        inputMode='numeric'
                         
                         selectionColor="#00c"
                         outlineColor={globalStyles.colors.blue}

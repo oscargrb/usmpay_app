@@ -63,7 +63,7 @@ const NFCReadScreen = props =>{
                 <Text
                     style={styles.logoTitle}
                 >
-                    Esperando Ticket para {userInfo.rutaActual}...
+                    Esperando Ticket para {userInfo.rutaActual.nbRuta}...
                 </Text>
                 <Text
                     style={styles.logoSubTitle}

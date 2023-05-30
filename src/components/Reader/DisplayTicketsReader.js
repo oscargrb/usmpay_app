@@ -3,11 +3,14 @@ import { StyleSheet, View } from 'react-native'
 import {useState, useContext, useEffect} from "react"
 import globalStyles from '../../common/globalStyles'
 import UserInfoContext from '../../context/UserInfoContext'
+import ApiService from '../../common/ApiService'
+import RutasContext from '../../context/RutasContext'
 
 
 const DisplayTicketsReader = props =>{
 
-    const {userInfo} = useContext(UserInfoContext)
+    const {userInfo, updateUserInfo} = useContext(UserInfoContext)
+    
 
     const styles = StyleSheet.create({
         container:{
@@ -60,20 +63,20 @@ const DisplayTicketsReader = props =>{
                         style={styles.ticketsDisp}
                     >   
                         <Text style={styles.CardContentTickets} >
-                            {userInfo.rutaActual}
+                            {userInfo.rutaActual.nbRuta}
                         </Text>
                     </View>
                     
                 </Card.Content>
-                <Card.Title 
+                {/* <Card.Title 
                     title={"Tickets Cobrados Hoy"}
                     titleStyle = {styles.CardTitle} 
-                />
+                /> */}
                 <Card.Content
                     style={styles.tipoTicketContainer}
                 >
         
-                    <View
+                    {/* <View
                         style={styles.ticketsDisp}
                     >
                         <IconButton 
@@ -153,14 +156,10 @@ const DisplayTicketsReader = props =>{
                             mode="contained"
                         />
                         <Text style={styles.CardContentTickets} >
-                            {
-                                props.tickets.length > 0?
-                                    2:
-                                    0
-                            }
+                            0
                         </Text>
                         
-                    </View>
+                    </View> */}
                     
                 </Card.Content>
             </Card>

@@ -14,7 +14,7 @@ const MenuAcount = (props) => {
   
 
   const logout =  async ()=>{
-
+    setLoader(true)
     const logout = await UserService.logout()
 
     setTimeout(()=>{
@@ -57,7 +57,7 @@ const MenuAcount = (props) => {
   return (
       <Pressable
         style={styles.container}
-        onPress={()=> props.closeMenu()}
+        
       >
 
         <View style={styles.menu}>
@@ -90,7 +90,10 @@ const MenuAcount = (props) => {
 
           <Button 
             icon={"exit-to-app"}
-            onPress={logout}
+            onPress={()=>{
+              props.closeMenu()
+              logout()
+            }}
             style={styles.items}
             mode="text"
             iconColor={globalStyles.colors.blue}
