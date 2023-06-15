@@ -1,5 +1,5 @@
 import { Card, Text, TextInput, Button, IconButton, Dialog, Portal, RadioButton } from 'react-native-paper'
-import { StyleSheet, View, Alert } from 'react-native'
+import { StyleSheet, View, Alert, Keyboard } from 'react-native'
 import {useState, useContext} from "react"
 import Loader from './Loader'
 import globalStyles from '../common/globalStyles'
@@ -85,7 +85,7 @@ const AddTickets = props =>{
     const [total, setTotal] = useState(0)
 
     const ticketCompra = async ()=>{
-
+        Keyboard.dismiss()
         const auth = await nxu.gnxut()
         
 

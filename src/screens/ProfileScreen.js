@@ -147,7 +147,7 @@ const ProfileScreen = props =>{
                         {
                             userInfo.rol == 2001?
                                 "Usuario":
-                                "Personal del Autobus"
+                                "Lector"
                         }
                     </Text>
                 </View>

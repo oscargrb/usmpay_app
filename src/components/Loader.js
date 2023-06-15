@@ -1,5 +1,5 @@
 import {ActivityIndicator, Text } from 'react-native-paper'
-import {View, StyleSheet, useWindowDimensions} from 'react-native'
+import {View, StyleSheet, useWindowDimensions, Image} from 'react-native'
 import globalStyles from '../common/globalStyles'
 
 const Loader = props =>{
@@ -22,7 +22,14 @@ const Loader = props =>{
         <View
             style={styles.container}
         >
-            <ActivityIndicator animating={true} size={"large"} color={globalStyles.colors.white} />
+            <Image 
+                source={require('../assets/gif/loader.gif')}
+                style={{
+                    width:200,
+                    height:200
+                }}
+            />
+            {/* <ActivityIndicator animating={true} size={"large"} color={globalStyles.colors.white} /> */}
             <Text
                 style={{
                     fontSize:20,

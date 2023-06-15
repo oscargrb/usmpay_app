@@ -6,6 +6,7 @@ const ActionPayTicket = props =>{
 
     const styles = StyleSheet.create({
         container:{
+            
             margin:10,
             marginTop:0
         },

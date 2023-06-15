@@ -28,6 +28,7 @@ import TokenTimeout from "./components/tokenTimeout"
 import HistoricUser from "./screens/User/HistoricUser"
 import Preload from "./screens/Preload"
 import RutasContext from "./context/RutasContext"
+import HistoricBalanceUser from "./screens/User/HistoricBalanceUser"
 
 
 const Stack = createNativeStackNavigator()
@@ -182,19 +183,26 @@ const App = props=>{
                         }}
                     />
                     <Stack.Screen 
+                        name="HistoricBalanceUser" 
+                        component={HistoricBalanceUser}
+                        options={{
+                            header: (props)=> <Header nav={props.navigation.navigate} />
+                        }}
+                    />
+                    <Stack.Screen 
                         name="Sorry" 
                         component={SorryScreen}
                         options={{
                             headerShown:false
                         }}
                     />
-                    {/* <Stack.Screen 
+                    <Stack.Screen 
                         name="Loader" 
                         component={Loader}
                         options={{
                             headerShown:false
                         }}
-                    /> */}
+                    />
                     
                     
                 </Stack.Navigator>

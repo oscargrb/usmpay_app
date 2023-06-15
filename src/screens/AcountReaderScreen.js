@@ -19,49 +19,28 @@ import PaymentsHistoricReader from "../components/Reader/PaymentsHistoricReader"
 
 
 const AcountReaderScreen = props =>{
-
-
     const nav = screen =>{
         props.navigation.navigate(screen)
     }
-
     
     return(
         <Provider
-            
         >
+        
             <View
                 style={{
-
-                    justifyContent:"flex-start",
-                    height:Dimensions.get("window").height,
-                    overflow:"scroll"
+                    elevation: 1,
+                    zIndex: 1,
+                    flex:1,
+                    justifyContent:"space-between",
+                    
                 }}
             >
-                {/* <View
-                    style={{
-                        elevation: 2,
-                        zIndex: 2
-                    }}
-                >
-                    <Header nav={nav}  />
-                </View> */}
-                <View
-                    style={{
-                        elevation: 1,
-                        zIndex: 1,
-                        flex:1,
-                        justifyContent:"center",
-                        
-                    }}
-                >
-                    <DisplayTicketsReader  />
-                    <OptionsReader nav={nav} />
-                    <PaymentsHistoricReader />
-                    
-                </View>
-                {/* <TokenTimeout /> */}
-            </View>
+                <DisplayTicketsReader  />
+                <OptionsReader nav={nav} />
+                <PaymentsHistoric nav={nav} />
+                
+            </View> 
         </Provider>
     )
 }

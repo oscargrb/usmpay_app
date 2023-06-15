@@ -51,9 +51,6 @@ const styles = StyleSheet.create({
 
 const LoginScreen = props=>{
 
-    // NECESITO QUE EL ROL VENGA EN LA RESPUESTA!
-    const rol = ApiService.userRol
-
     const [registerData, setRegisterData] = useState({
         document:null,
         password: null
@@ -101,7 +98,6 @@ const LoginScreen = props=>{
                         })
                         if(result.ok){
                             setLoader(false)
-                            //Alert.alert('Login sucessfull!')
                             const scred = await Ucred.sUcred({
                                 user:registerData.document,
                                 pwd: registerData.password 

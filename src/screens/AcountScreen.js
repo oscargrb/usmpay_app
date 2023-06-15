@@ -30,27 +30,16 @@ const AcountScreen = props =>{
         >
             <View
                 style={{
-
-                    justifyContent:"flex-start",
-                    height:Dimensions.get("window").height,
-                    overflow:"scroll"
+                    elevation: 1,
+                    zIndex: 1,
+                    flex:1,
+                    justifyContent:"space-between",
+                    
                 }}
             >
-                
-                <View
-                    style={{
-                        elevation: 1,
-                        zIndex: 1,
-                        flex:1,
-                        justifyContent:"center",
-                        
-                    }}
-                >
-                    <DisplayTickets nav={nav} />
-                    <ActionPayTicket nav={nav} />
-                    <PaymentsHistoric nav={nav} />
-                    
-                </View>
+                <DisplayTickets nav={nav} />
+                <ActionPayTicket nav={nav} />
+                <PaymentsHistoric nav={nav} />
                 
             </View>
             {

@@ -76,7 +76,7 @@ const RegisterScreen = props=>{
                 pwd: registerData.password,
                 mail: registerData.mail,
                 roll: 2001,
-                phone: registerData.phone
+                telefono: registerData.phone
             })
         }).then(response=>{
             

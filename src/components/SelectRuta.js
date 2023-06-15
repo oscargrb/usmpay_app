@@ -88,7 +88,7 @@ const SelectRuta = props =>{
                                             
                                         }}
                                         source={{
-                                            uri:i.urlImage
+                                            uri:i.foto
                                         }}
                                         
                                     >

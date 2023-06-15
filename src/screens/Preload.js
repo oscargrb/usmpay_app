@@ -6,31 +6,9 @@ import Ucred from '../context/Ucred'
 import UserInfoContext from '../context/UserInfoContext'
 import ApiService from '../common/ApiService'
 import RutasContext from '../context/RutasContext'
+import { Alert } from 'react-native'
 
 const Preload = ({navigation}) =>{
-
-    const colors = [
-        {
-            id:1,
-            color: "#b00",
-            urlImage:"https://http2.mlstatic.com/D_NQ_NP_767473-MLV50739669349_072022-W.jpg"
-        },
-        {
-            id:2,
-            color: "#0b0",
-            urlImage:"https://guiaccs.com/wp-content/uploads/2017/09/Plaza-Venezuela_DDN-DESTACADA.jpg"
-        },
-        {
-            id:3,
-            color:"#00b",
-            urlImage:"https://www.descifrado.com/wp-content/uploads/2020/06/65422348.jpg"
-        },
-        {
-            id:4,
-            color:"#bb0",
-            urlImage:"https://alcaldiadeguaicaipuro.gob.ve/wp-content/uploads/2022/08/fotocatedraldelosteques-1280x720-1.jpg"
-        }
-    ]
 
     const balance = new Intl.NumberFormat("es-VE", {
         /* style: "currency",
@@ -60,7 +38,6 @@ const Preload = ({navigation}) =>{
                         })
                     }).then(response=>{
                         response.json().then(data=>{
-                            console.log(data.foundUser.Tickets)
                             updateUserInfo({
                                 tickets: data.foundUser.Tickets,
                                 balance: balance.format(data.foundUser.UserBalance.balance),
@@ -71,14 +48,15 @@ const Preload = ({navigation}) =>{
                                 rutaActual: first
                             })
 
+                            
 
-                            //navigation.navigate('AcountReader')
-    
+                           //navigation.navigate('AcountReader')
                             data.foundUser.rol == 2001? 
                                 navigation.navigate('Acount'):
                                 navigation.navigate('AcountReader')
                             
                         }).catch(e=>{
+
                             console.log(e, "error")
                             
                         })
@@ -92,6 +70,7 @@ const Preload = ({navigation}) =>{
             const findRutas = async ()=>{
                 const auth = await nxu.gnxut()
                 if(auth.ok){
+                    
                     fetch(`${ApiService.url}/ruta/ruta`, {
                         method:"get",
                         headers:{
@@ -99,20 +78,16 @@ const Preload = ({navigation}) =>{
                             'Content-Type': 'application/json'
                         }
                     }).then(response=>{
-                        response.json().then(data=>{
-                            
-                            if(response.status == 200){
-                                let rutas = []
-                                data.forEach(element => {
-                                    element.color = colors.find(i=> i.id == element.id).color
-                                    element.urlImage = colors.find(i=> i.id == element.id).urlImage
-                                    rutas.push(element)
-                                });
-                                
-                                updateRutas(rutas)
+                        console.log(response)
+                        if(response.status == 200){
+                            response.json().then(data=>{
+                                console.log(data)
+                                updateRutas(data)
                                 sendNxu(data[0])
-                            }
-                        })
+                            })
+                        }
+                    }).catch(e=>{
+                        console.log(e, "entra aca")
                     })
                 }
             }

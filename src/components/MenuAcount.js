@@ -14,15 +14,17 @@ const MenuAcount = (props) => {
   
 
   const logout =  async ()=>{
-    setLoader(true)
+    /* setLoader(true) */
+
+    props.nav('Loader')
     const logout = await UserService.logout()
 
     setTimeout(()=>{
       if(logout.ok){
-        setLoader(false)
+        /* setLoader(false) */
         props.nav("Home")
       }else{
-        setLoader(false)
+        /* setLoader(false) */
         Alert.alert('Error: No se puede cerrar sesion')
       }
     }, 2000)
@@ -59,7 +61,11 @@ const MenuAcount = (props) => {
         style={styles.container}
         
       >
-
+        {
+          loader?
+            <Loader />:
+            <></>
+        }
         <View style={styles.menu}>
           <Text style={styles.menutitle}>MENU</Text>
           <Button 
@@ -103,11 +109,7 @@ const MenuAcount = (props) => {
           </Button>
         </View>
 
-        {
-          loader?
-            <Loader />:
-            <></>
-        }
+        
       
       </Pressable>
   );

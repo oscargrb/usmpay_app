@@ -1,5 +1,5 @@
 import { Card, Text, TextInput, Button, ActivityIndicator } from 'react-native-paper'
-import { StyleSheet, View, Alert } from 'react-native'
+import { StyleSheet, View, Alert, Keyboard } from 'react-native'
 import {useState, useContext} from "react"
 import Loader from './Loader'
 import globalStyles from '../common/globalStyles'
@@ -13,6 +13,7 @@ const AddToWallet = props =>{
     const {userInfo} = useContext(UserInfoContext)
 
     const onSubmitForm = ()=>{
+        Keyboard.dismiss()
         if(!refNumb){
             return(
                 Alert.alert("Debe completar todos los campos")
@@ -99,7 +100,7 @@ const AddToWallet = props =>{
         },
         registerPay: {
             padding: 10,
-            marginTop: 20
+            marginTop: 10
         },
         card:{
             backgroundColor:globalStyles.colors.white,
@@ -130,6 +131,23 @@ const AddToWallet = props =>{
                 </Card.Content>
             </Card>
 
+            <View
+                style={{
+                    padding: 10
+                }}
+            >
+                <Text
+                    style={{
+                        fontSize: 14,
+                        color:globalStyles.colors.blue,
+                        textDecorationLine:"underline"
+                    }}
+                    onPress={()=> props.nav("HistoricBalanceUser")} 
+                >
+                    Ver histórico de operaciones
+                </Text>
+            </View>
+
             <View 
                 style={styles.registerPay}
             >
@@ -149,7 +167,7 @@ const AddToWallet = props =>{
                     <Text
                         style={styles.textInfo}
                     >
-                        Ingresa la informacion del pago
+                        Ingresa la información del pago
                     </Text>
                 </View>
 

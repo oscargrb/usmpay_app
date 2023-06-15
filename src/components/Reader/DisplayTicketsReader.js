@@ -11,7 +11,6 @@ const DisplayTicketsReader = props =>{
 
     const {userInfo, updateUserInfo} = useContext(UserInfoContext)
     
-
     const styles = StyleSheet.create({
         container:{
             
@@ -21,7 +20,8 @@ const DisplayTicketsReader = props =>{
             fontSize:16,
             color:globalStyles.colors.black,
             textAlign: "center",
-            fontWeight: "bold"
+            fontWeight: "bold",
+            
         },
         CardContentTickets: {
             color:globalStyles.colors.black,
@@ -34,14 +34,15 @@ const DisplayTicketsReader = props =>{
             textAlign: "center"
         },
         tipoTicketContainer:{
-            flexDirection:"row",
+            
             justifyContent:"center"
         },
         ticketsDisp:{
             margin:10
         },
         card:{
-            backgroundColor: globalStyles.colors.white
+            backgroundColor: globalStyles.colors.white,
+            height:200
         }
     })
 
@@ -75,7 +76,22 @@ const DisplayTicketsReader = props =>{
                 <Card.Content
                     style={styles.tipoTicketContainer}
                 >
-        
+                    <View
+                        style={styles.ticketsDisp}
+                    >
+                        <IconButton 
+                            icon={"ticket"}
+                            mode="contained"
+                            containerColor={userInfo.rutaActual.color}
+                            iconColor='#fff'
+                            size={20}
+                            style={{
+                                alignSelf:"center"
+                            }}
+                        />
+                        
+                        
+                    </View>
                     {/* <View
                         style={styles.ticketsDisp}
                     >

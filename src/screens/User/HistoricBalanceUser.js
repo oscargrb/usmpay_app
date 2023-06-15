@@ -1,5 +1,5 @@
-import {View, StyleSheet, FlatList, ScrollView} from 'react-native'
-import { Button, DataTable, IconButton, Text, TextInput } from 'react-native-paper'
+import {View, StyleSheet, FlatList, ScrollView, Alert} from 'react-native'
+import { DataTable, IconButton, Text, TextInput } from 'react-native-paper'
 import globalStyles from '../../common/globalStyles'
 import {useContext, useState, useEffect} from 'react'
 import UserInfoContext from '../../context/UserInfoContext'
@@ -8,7 +8,23 @@ import nxu from '../../context/Nxu'
 import ApiService from '../../common/ApiService'
 import Loader from '../../components/Loader'
 
+const iconColor = {
+    Validado:{
+        color:"#3d3"
+    },
+    Expirado:{
+        color:"#d33"
+    },
+    Pendiente:{
+        color:"#dd3"
+    }
+}
 
+const balance = new Intl.NumberFormat("es-VE", {
+    /* style: "currency",
+    currency: "EUR", */
+    minimumFractionDigits: 2,
+});
 
 const styles = StyleSheet.create({
     container:{
@@ -62,7 +78,8 @@ const styles = StyleSheet.create({
         textAlign:"center",
         flex:1,
         padding:5,
-        fontSize:10
+        fontSize:10,
+        
     },
     cellUnic:{
         color:globalStyles.colors.white,
@@ -74,7 +91,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const HistoricUser = props =>{
+const HistoricBalanceUser = props =>{
 
     const {userInfo} = useContext(UserInfoContext)
     const {Rutas} = useContext(RutasContext)
@@ -84,58 +101,68 @@ const HistoricUser = props =>{
     const [loader, setLoader] = useState(false)
 
     const findHistoric = async () =>{
+        
         setLoader(true)
         const auth = await nxu.gnxut()
 
-        fetch(`${ApiService.url}/transaction?user=${userInfo.document}`, {
-            method:"get",
+        fetch(`${ApiService.urlBankAutomate}/allConsult`, {
+            method:"post",
             headers:{
-                "Authorization": `Bearer ${auth.result.tkn}`,
                 "Content-Type":"application/json"
-            }
+            },
+            body:JSON.stringify({
+                user: userInfo.document
+            })
         }).then(response=>{
+            console.log(response)
             if(response.status == 200){
-                response.json().then(data=>{
-                    if(data.length > 0){
-                        setHistoricFilter(
-                            data.sort((a,b)=> new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                        )
+                response.json().then(result=>{
+                    console.log(result)
+                    
+                    if(result.ok){
                         setHistoric(
-                            data.sort((a,b)=> new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                            result.data.sort((a,b)=> new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                        )
+                        setHistoricFilter(
+                            result.data.sort((a,b)=> new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                         )
                     }
-                    
                     setLoader(false)
                     return ()=>{
                         true
                     }
+                }).catch(e=>{
+                    setLoader(false)
+                    console.log(e)
                 })
+            }else{
+                setLoader(false)
             }
+        
+        }).catch(e=>{
+            setLoader(false)
+            Alert.alert("Error, no se pudo conectar con el servidor")
         })
     }
 
     useEffect(()=>{
-        
         findHistoric()
     }, [])
 
     onChangeSearch = val=>{
         setHistoricFilter(
-            historic.filter(item=> 
-                item.id.toString().includes(val.trim()) ||
-                item.type.toLowerCase().includes(val.toLowerCase()) ||
-                Rutas.find(i=> i.id == item.ruta_id).nbRuta.toLowerCase()
-                    .includes(val.toLowerCase()) 
+            historic.filter(item=> item.Op_number.toString().includes(val.trim()) ||
+                item.Status.toLowerCase().includes(val.toLowerCase())
             )
         )
     }
 
     return(
+
         <View>
             <ScrollView
                 style={styles.container}
             >
-                
                 <View
                     style={styles.headerIcons}
                 >
@@ -157,7 +184,7 @@ const HistoricUser = props =>{
                                 fontWeight:"bold"
                             }}
                         >
-                            Compra/Pago de Tickets
+                            Histórico de Operaciones
                         </Text>
                     </View>
                     <IconButton 
@@ -191,7 +218,7 @@ const HistoricUser = props =>{
                     />
                     
                 </View>
-                
+
                 <View
                     style={{
                         padding:20
@@ -210,16 +237,19 @@ const HistoricUser = props =>{
                             }}
                         >
                             <DataTable.Title textStyle={styles.tableTitle}>
-                                Numero Op.
+                                Referencia
                             </DataTable.Title>
                             <DataTable.Title textStyle={styles.tableTitle}>
-                                Operacion
+                                Estatus
                             </DataTable.Title>
                             <DataTable.Title textStyle={styles.tableTitle}>
-                                Ruta
+                                Monto Bs
                             </DataTable.Title>
                             <DataTable.Title textStyle={styles.tableTitle}>
-                                Fecha
+                                Creado
+                            </DataTable.Title>
+                            <DataTable.Title textStyle={styles.tableTitle}>
+                                Vence el
                             </DataTable.Title>
                         </DataTable.Header>
 
@@ -229,20 +259,28 @@ const HistoricUser = props =>{
                                 return(
                                     <DataTable.Row key={item.id}>
                                         <DataTable.Cell textStyle={styles.cell}>
-                                            {item.id.toString().padStart(7, "0")}
+                                            {item.Op_number}
                                         </DataTable.Cell>
                                         <DataTable.Cell textStyle={Object.assign({
-                                            backgroundColor: item.type == "Compra"?
-                                                globalStyles.colors.red:
-                                                globalStyles.colors.green
+                                            backgroundColor: item.Status == "Validado"?
+                                                globalStyles.colors.green:
+                                                item.Status == "Expirado"?
+                                                    globalStyles.colors.red:
+                                                    globalStyles.colors.yellow
                                         }, styles.cellUnic)}>
-                                            {item.type}
+                                            {item.Status}
                                         </DataTable.Cell>
                                         <DataTable.Cell textStyle={styles.cell}>
-                                            {Rutas.find(i=> i.id == item.ruta_id).nbRuta}
+                                            {item.Count? balance.format(item.Count): ""}
                                         </DataTable.Cell>
                                         <DataTable.Cell textStyle={styles.cell}>
                                             {new Date(item.createdAt).toLocaleString(
+                                                undefined,
+                                                {day: "2-digit", month:"2-digit", "year":"2-digit"}
+                                            )}
+                                        </DataTable.Cell>
+                                        <DataTable.Cell textStyle={styles.cell}>
+                                            {new Date(item.Expire).toLocaleString(
                                                 undefined,
                                                 {day: "2-digit", month:"2-digit", "year":"2-digit"}
                                             )}
@@ -256,16 +294,15 @@ const HistoricUser = props =>{
                     </DataTable>
                 </View>
 
-
                 
+                {
+                    loader?
+                        <Loader />:
+                        <></>
+                }
             </ScrollView>
-            {
-                loader?
-                    <Loader />:
-                    <></>
-            }
         </View>
     )
 }
 
-export default HistoricUser
+export default HistoricBalanceUser

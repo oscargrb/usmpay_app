@@ -1,8 +1,9 @@
-import { Text, View, StyleSheet, Image} from "react-native"
+import { Text, View, StyleSheet, Image, Platform} from "react-native"
 import React, { useState, useEffect, useContext } from "react"
 import {  Button, IconButton } from "react-native-paper"
 import globalStyles from "../../common/globalStyles"
 import UserInfoContext from "../../context/UserInfoContext"
+import nfcManager, { NfcEvents } from "react-native-nfc-manager"
 
 
 const styles = StyleSheet.create({
@@ -37,6 +38,35 @@ const NFCReadScreen = props =>{
 
     const {userInfo} = useContext(UserInfoContext)
 
+    useEffect(()=>{
+        
+        const initNFC = async ()=>{
+            if(nfcManager.isEnabled()){
+                nfcManager.start().then(()=>{
+                    if(Platform.OS == "android"){
+                        Alert.alert("Escaneo activado")
+                        nfcManager.setEventListener(NfcEvents.DiscoverTag, (tag=>{
+                            console.log(tag)
+                            nfcManager.unregisterTagEvent().catch(()=> 0)
+                        }))
+                    }else{
+                        Alert.alert("Esta aplicacion todavia no soporta IOS")
+                        
+                    }
+                })
+            }else{
+                Alert.alert("NFC esta desabilitado en este dispositivo")
+                
+            }
+            
+        }
+
+        initNFC()
+
+        
+
+    }, [])
+
     return(
         <View
             style={{
@@ -48,7 +78,10 @@ const NFCReadScreen = props =>{
                 <IconButton 
                     icon={"keyboard-backspace"}
                     iconColor={globalStyles.colors.black}
-                    onPress={()=> props.navigation.goBack()}
+                    onPress={()=> {
+                        nfcManager.unregisterTagEvent().catch(()=> 0)
+                        props.navigation.goBack()
+                    }}
                     
                 />
             </View>
