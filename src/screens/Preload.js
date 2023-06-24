@@ -38,31 +38,34 @@ const Preload = ({navigation}) =>{
                         })
                     }).then(response=>{
                         response.json().then(data=>{
-                            updateUserInfo({
-                                tickets: data.foundUser.Tickets,
-                                balance: balance.format(data.foundUser.UserBalance.balance),
-                                correo: data.foundUser.correo,
-                                document: data.foundUser.id_number,
-                                rol: data.foundUser.rol,
-                                telefono: data.foundUser.telefono,
-                                rutaActual: first
-                            })
-
+                            if(!data.error){
+                                updateUserInfo({
+                                    tickets: data.foundUser.Tickets,
+                                    balance: balance.format(data.foundUser.UserBalance.balance),
+                                    correo: data.foundUser.correo,
+                                    document: data.foundUser.id_number,
+                                    rol: data.foundUser.rol,
+                                    telefono: data.foundUser.telefono,
+                                    rutaActual: first
+                                })
+                               //navigation.navigate('AcountReader')
+                                data.foundUser.rol == 2001? 
+                                    navigation.navigate('Acount'):
+                                    navigation.navigate('AcountReader')
+                            }else{
+                                console.log(data.error)
+                                navigation.goBack()
+                            }
                             
-
-                           //navigation.navigate('AcountReader')
-                            data.foundUser.rol == 2001? 
-                                navigation.navigate('Acount'):
-                                navigation.navigate('AcountReader')
                             
                         }).catch(e=>{
 
                             console.log(e, "error")
-                            
+                            navigation.goBack()
                         })
                     }).catch(e=>{
                         console.log(e)
-                        
+                        navigation.goBack()
                     })
                 }
             }
@@ -88,7 +91,10 @@ const Preload = ({navigation}) =>{
                         }
                     }).catch(e=>{
                         console.log(e, "entra aca")
+                        navigation.goBack()
                     })
+                }else{
+                    navigation.goBack()
                 }
             }
 

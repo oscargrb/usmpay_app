@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Image} from "react-native"
+import { Text, View, StyleSheet, Image, Alert} from "react-native"
 import React, { useState, useEffect } from "react"
 import {  Button } from "react-native-paper"
 import MenuAcount from "../components/MenuAcount"
@@ -50,7 +50,9 @@ const HomeScreen = props =>{
         async function checkNfc(){
             const supported = await nfcManager.isSupported()
             if(supported){
-                await NfcManager.start()
+                //Alert.alert("NFC disponible")
+                //await nfcManager.start()
+                
             }else{
                 props.navigation.navigate('Sorry')
             }

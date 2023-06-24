@@ -75,17 +75,26 @@ const SorryScreen = props=>{
                 <Text
                     style={styles.registerTextTitle}
                 >
-                    Tu dispositivo no cuenta con tecnologia NFC!
+                    Tu dispositivo no cuenta con tecnología NFC!
                 </Text>
 
                 <Text
                     style={styles.registerTextInfo}
                 >
-                    NFC te permite realizar transacciones de forma agil y rapida,
-                    no te preocupes la mayoria de empresas de smartphones estan
-                    incluyendo esta tecnologia. para mas informacion comunicate con
-                    los desarrolladores de esta app. 
-                    usmpay_support@gmail.com 
+                    NFC te permite realizar transacciones de forma ágil y rápida,
+                    no te preocupes la mayoria de empresas de teléfonos inteligentes ya están
+                    incluyendo esta tecnología en todos sus dispositivos.
+                    para mas información comunicate con los desarrolladores de esta app:
+                    {"\n\n"}
+                    <Text
+                        style={{
+                            fontWeight:"bold",
+                            color:globalStyles.colors.black,
+                            textDecorationLine:"underline"
+                        }}
+                    >
+                        usmpay_support@gmail.com
+                    </Text>
                 </Text>
                 
             </View>

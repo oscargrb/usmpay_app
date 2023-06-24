@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 
     },  
     title:{
-        fontSize: 20,
+        fontSize: 25,
         color: globalStyles.colors.blue,
         fontWeight:"bold"
     },
@@ -48,6 +48,8 @@ const RegisterScreen = props=>{
     })
 
     const [loader, setLoader] = useState(false)
+    const [hidePwd, setHidePwd] = useState(true)
+    const [hidePwd2, setHidePwd2] = useState(true)
 
     const onSubmitForm = ()=>{
         Keyboard.dismiss()
@@ -117,7 +119,7 @@ const RegisterScreen = props=>{
                 <Text
                     style={styles.title} 
                 >
-                    Registrate
+                    Regístrate ya
                 </Text>
             </View>
 
@@ -235,27 +237,46 @@ const RegisterScreen = props=>{
                     onChangeText={text => onChageField("password", text)}
                     label={
                         <Text
-                            style={{backgroundColor:"white", color:"black"}}
+                            style={{
+                                backgroundColor:"white", 
+                                color:"black",
+                                width: "100%"
+                            }}
                         >
                             Crear clave de acceso *
                         </Text>
                     }
-                    
                     selectionColor="#00c"
                     outlineColor={globalStyles.colors.blue}
                     outlineStyle={{
                         borderWidth:2
                     }}
                     activeOutlineColor="#007"
-
                     backgroundColor={globalStyles.colors.white}
-                    
                     mode="flat"
-                    contentStyle={{color:globalStyles.colors.black}}
+                    contentStyle={{color:globalStyles.colors.black, backgroundColor:"white"}}
                     underlineColor='transparent'
                     activeUnderlineColor='transparent'
-                    
-                    secureTextEntry={true}
+                    secureTextEntry={hidePwd}
+                    right={
+                        <TextInput.Icon
+                            icon={"eye"} 
+                            iconColor={globalStyles.colors.black}
+                            onPress={()=>{
+                                hidePwd?
+                                    setHidePwd(false):
+                                    setHidePwd(true)
+                            }}
+                            size={25}
+                            style={{
+                                backgroundColor:"white",
+                                borderRadius:0,
+                                width:58,
+                                height:56
+                            }}
+                            containerColor="transparent"
+                        />
+                    }
                 /> 
             </View>
 
@@ -285,7 +306,26 @@ const RegisterScreen = props=>{
                     contentStyle={{color:globalStyles.colors.black}}
                     underlineColor='transparent'
                     activeUnderlineColor='transparent'
-                    secureTextEntry={true}
+                    secureTextEntry={hidePwd2}
+                    right={
+                        <TextInput.Icon
+                            icon={"eye"} 
+                            iconColor={globalStyles.colors.black}
+                            onPress={()=>{
+                                hidePwd2?
+                                    setHidePwd2(false):
+                                    setHidePwd2(true)
+                            }}
+                            size={25}
+                            style={{
+                                backgroundColor:"white",
+                                borderRadius:0,
+                                width:58,
+                                height:56
+                            }}
+                            containerColor="transparent"
+                        />
+                    }
                 /> 
             </View>
 

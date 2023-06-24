@@ -1,9 +1,9 @@
-import { Text, View, StyleSheet, Image, Platform} from "react-native"
+import { Text, View, StyleSheet, Image, Platform, Alert} from "react-native"
 import React, { useState, useEffect, useContext } from "react"
 import {  Button, IconButton } from "react-native-paper"
 import globalStyles from "../../common/globalStyles"
 import UserInfoContext from "../../context/UserInfoContext"
-import nfcManager, { NfcEvents } from "react-native-nfc-manager"
+import nfcManager, { NfcEvents, NfcTech } from "react-native-nfc-manager"
 
 
 const styles = StyleSheet.create({
@@ -38,34 +38,36 @@ const NFCReadScreen = props =>{
 
     const {userInfo} = useContext(UserInfoContext)
 
+    
+
     useEffect(()=>{
-        
-        const initNFC = async ()=>{
-            if(nfcManager.isEnabled()){
-                nfcManager.start().then(()=>{
-                    if(Platform.OS == "android"){
-                        Alert.alert("Escaneo activado")
-                        nfcManager.setEventListener(NfcEvents.DiscoverTag, (tag=>{
-                            console.log(tag)
-                            nfcManager.unregisterTagEvent().catch(()=> 0)
-                        }))
-                    }else{
-                        Alert.alert("Esta aplicacion todavia no soporta IOS")
-                        
-                    }
-                })
-            }else{
-                Alert.alert("NFC esta desabilitado en este dispositivo")
-                
-            }
-            
+        nfcManager.start()
+        return ()=>{
+            nfcManager.cancelTechnologyRequest()
         }
+    },[])
 
-        initNFC()
+    const onTagDiscovered = async tag => {
+        try {
+          let tagData = await nfcManager.readNdefMessage();
+          if (tagData && tagData.length > 0) {
+            let textData = tagData[0].payload;
+            console.log('Tag data read:', textData);
+          }
+          nfcManager.unregisterTagEvent();
+        } catch (ex) {
+          console.warn('Error reading tag data', ex);
+        }
+    }
 
-        
-
-    }, [])
+    const onPress = async () => {
+        try {
+          await nfcManager.registerTagEvent(onTagDiscovered);
+          await nfcManager.requestTechnology(NfcTech.Ndef);
+        } catch (ex) {
+          console.warn('Error while registering tag event', ex);
+        }
+    }
 
     return(
         <View
@@ -78,8 +80,9 @@ const NFCReadScreen = props =>{
                 <IconButton 
                     icon={"keyboard-backspace"}
                     iconColor={globalStyles.colors.black}
-                    onPress={()=> {
-                        nfcManager.unregisterTagEvent().catch(()=> 0)
+                    onPress={async ()=> {
+                        nfcManager.setEventListener(NfcEvents.DiscoverTag, null)
+                        await nfcManager.cancelTechnologyRequest()
                         props.navigation.goBack()
                     }}
                     
@@ -103,7 +106,9 @@ const NFCReadScreen = props =>{
                 >
                     Para realizar la transaccion acerque los dispositivos a una distancia de 30cm aprox.
                 </Text>
-                
+                <Button
+                    onPress={onPress}
+                >Leer</Button>
             </View>
         </View>
     )

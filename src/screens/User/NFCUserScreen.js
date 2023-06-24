@@ -1,8 +1,9 @@
-import { Text, View, StyleSheet, Image} from "react-native"
+import { Text, View, StyleSheet, Image, Alert} from "react-native"
 import React, { useState, useEffect, useContext } from "react"
 import {  Button, IconButton } from "react-native-paper"
 import globalStyles from "../../common/globalStyles"
 import UserInfoContext from "../../context/UserInfoContext"
+import nfcManager, { Ndef, NfcEvents, NfcTech } from "react-native-nfc-manager"
 
 
 const styles = StyleSheet.create({
@@ -34,8 +35,36 @@ const styles = StyleSheet.create({
 })
 
 const NFCUserScreen = props =>{
-
+    
     const {userInfo} = useContext(UserInfoContext)
+
+    useEffect(()=>{
+        nfcManager.start()
+        return ()=>{
+            nfcManager.cancelTechnologyRequest()
+        }
+    },[])
+
+    const onTagDiscovered = async tag => {
+        try {
+          let messages = [
+            Ndef.textRecord('Hello, world!')
+          ];
+          await nfcManager.writeNdefMessage(messages);
+          console.log('Message written to tag:', messages);
+          nfcManager.unregisterTagEvent();
+        } catch (ex) {
+          console.warn('Error writing to tag', ex);
+        }
+    }
+
+    const onPress = async () => {
+        try {
+          await nfcManager.registerTagEvent(onTagDiscovered);
+        } catch (ex) {
+          console.warn('Error while registering tag event', ex);
+        }
+      }
 
     return(
         <View
@@ -48,7 +77,10 @@ const NFCUserScreen = props =>{
                 <IconButton 
                     icon={"keyboard-backspace"}
                     iconColor={globalStyles.colors.black}
-                    onPress={()=> props.navigation.goBack()}
+                    onPress={async ()=> {
+                        await nfcManager.cancelTechnologyRequest()
+                        props.navigation.goBack()
+                    }}
                     
                 />
             </View>
@@ -70,7 +102,9 @@ const NFCUserScreen = props =>{
                 >
                     Para realizar la transaccion acerque los dispositivos a una distancia de 30cm aprox.
                 </Text>
-                
+                <Button
+                    onPress={onPress}
+                >Escribir</Button>
             </View>
         </View>
     )
