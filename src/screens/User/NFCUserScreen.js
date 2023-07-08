@@ -3,7 +3,8 @@ import React, { useState, useEffect, useContext } from "react"
 import {  Button, IconButton } from "react-native-paper"
 import globalStyles from "../../common/globalStyles"
 import UserInfoContext from "../../context/UserInfoContext"
-import nfcManager, { Ndef, NfcEvents, NfcTech } from "react-native-nfc-manager"
+import nfcManager, { Ndef, NfcEvents ,NfcTech  } from "react-native-nfc-manager"
+
 
 
 const styles = StyleSheet.create({
@@ -37,34 +38,28 @@ const styles = StyleSheet.create({
 const NFCUserScreen = props =>{
     
     const {userInfo} = useContext(UserInfoContext)
+    const [timer, setTimer] = useState(20)
+    const [intervalId, setIntervalId] = useState(null) 
 
-    useEffect(()=>{
-        nfcManager.start()
-        return ()=>{
-            nfcManager.cancelTechnologyRequest()
-        }
-    },[])
+    const init = ()=>{
+        let timeAux = timer
+        
+        const timing = ()=>{
+            if(timeAux <= 0){
+                clearInterval(intervalID)
+                props.navigation.goBack()
+            }
 
-    const onTagDiscovered = async tag => {
-        try {
-          let messages = [
-            Ndef.textRecord('Hello, world!')
-          ];
-          await nfcManager.writeNdefMessage(messages);
-          console.log('Message written to tag:', messages);
-          nfcManager.unregisterTagEvent();
-        } catch (ex) {
-          console.warn('Error writing to tag', ex);
+            setTimer(timeAux--)
         }
+
+        const intervalID = setInterval(timing, 1000)
+        setIntervalId(intervalID)
     }
 
-    const onPress = async () => {
-        try {
-          await nfcManager.registerTagEvent(onTagDiscovered);
-        } catch (ex) {
-          console.warn('Error while registering tag event', ex);
-        }
-      }
+    useEffect(()=>{
+        init()
+    },[])
 
     return(
         <View
@@ -78,7 +73,7 @@ const NFCUserScreen = props =>{
                     icon={"keyboard-backspace"}
                     iconColor={globalStyles.colors.black}
                     onPress={async ()=> {
-                        await nfcManager.cancelTechnologyRequest()
+                        clearInterval(intervalId)
                         props.navigation.goBack()
                     }}
                     
@@ -87,7 +82,16 @@ const NFCUserScreen = props =>{
             <View
                 style={styles.wrappper} 
             >
-                
+                <View>
+                    <Text
+                        style={{
+                            fontSize:16,
+                            color:globalStyles.colors.blue
+                        }}
+                    >
+                        {timer}s
+                    </Text>
+                </View>
                 <Image 
                     source={require('../../assets/gif/nfcTrns.gif')}
                     style={styles.logo}
@@ -102,9 +106,7 @@ const NFCUserScreen = props =>{
                 >
                     Para realizar la transaccion acerque los dispositivos a una distancia de 30cm aprox.
                 </Text>
-                <Button
-                    onPress={onPress}
-                >Escribir</Button>
+                
             </View>
         </View>
     )

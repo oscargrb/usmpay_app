@@ -1,9 +1,9 @@
-import { Text, View, StyleSheet, Image, Platform, Alert} from "react-native"
+import { Text, View, StyleSheet, Image, Platform, Alert, VirtualizedList} from "react-native"
 import React, { useState, useEffect, useContext } from "react"
-import {  Button, IconButton } from "react-native-paper"
+import {  Button, IconButton, Modal, Portal } from "react-native-paper"
 import globalStyles from "../../common/globalStyles"
 import UserInfoContext from "../../context/UserInfoContext"
-import nfcManager, { NfcEvents, NfcTech } from "react-native-nfc-manager"
+import nfcManager, { NfcEvents,NfcTech } from "react-native-nfc-manager"
 
 
 const styles = StyleSheet.create({
@@ -37,35 +37,50 @@ const styles = StyleSheet.create({
 const NFCReadScreen = props =>{
 
     const {userInfo} = useContext(UserInfoContext)
+    const [timer, setTimer] = useState(20)
+    const [intervalId, setIntervalId] = useState(null) 
+    const [modal, setModal] = useState(false)
 
-    
+    const init = ()=>{
+        let timeAux = timer
+        
+        const timing = ()=>{
+            if(timeAux <= 0){
+                clearInterval(intervalID)
+                props.navigation.goBack()
+            }
+
+            setTimer(timeAux--)
+        }
+
+        const intervalID = setInterval(timing, 1000)
+        setIntervalId(intervalID)
+    }
 
     useEffect(()=>{
         nfcManager.start()
-        return ()=>{
-            nfcManager.cancelTechnologyRequest()
-        }
+            .then(()=>{
+                read()
+            })
+        init()
     },[])
 
-    const onTagDiscovered = async tag => {
-        try {
-          let tagData = await nfcManager.readNdefMessage();
-          if (tagData && tagData.length > 0) {
-            let textData = tagData[0].payload;
-            console.log('Tag data read:', textData);
-          }
-          nfcManager.unregisterTagEvent();
-        } catch (ex) {
-          console.warn('Error reading tag data', ex);
-        }
-    }
+    const read = async ()=>{
+        let tag = null
 
-    const onPress = async () => {
-        try {
-          await nfcManager.registerTagEvent(onTagDiscovered);
-          await nfcManager.requestTechnology(NfcTech.Ndef);
-        } catch (ex) {
-          console.warn('Error while registering tag event', ex);
+        try{
+            await nfcManager.requestTechnology([NfcTech.Ndef]);
+            tag = await nfcManager.getTag()
+            tag.ndefStatus = await nfcManager.ndefHandler.getNdefStatus()
+
+        }catch(e){
+            console.log(e)
+        }finally{
+            nfcManager.cancelTechnologyRequest()
+        }
+
+        if(tag){
+            setModal(true)
         }
     }
 
@@ -76,13 +91,63 @@ const NFCReadScreen = props =>{
                 backgroundColor:globalStyles.colors.grey
             }}
         >
+            <Portal>
+                <Modal visible={modal} 
+                    style={{
+                        backgroundColor:globalStyles.colors.white,
+                        marginHorizontal: 50,
+                        marginTop:200,
+                        marginBottom:200,
+                        padding:20,
+                        borderRadius:20
+                    }}
+                >
+                    <View
+                        style={{
+                            
+                            flexDirection:"column",
+                            justifyContent:"center",
+                            alignItems:"center"
+                        }}
+                    >
+                        <IconButton icon={"check-circle"} 
+                            iconColor={globalStyles.colors.green}
+                            size={150}
+                        />
+                        <Text
+                            style={{
+                                fontSize:20,
+                                color:globalStyles.colors.black
+                            }}
+                        >
+                            Pago realizado con exito
+                        </Text>
+                        <Button
+                            textColor={globalStyles.colors.white}
+                            style={{
+                                margin:30,
+                                backgroundColor:globalStyles.colors.blue,
+                            }}
+                            onPress={async ()=>{
+                                await nfcManager.cancelTechnologyRequest()
+                                clearInterval(intervalId)
+                                props.navigation.goBack()
+                            }}
+                        >
+                            Continuar
+                        </Button>
+                    </View>
+                    
+                </Modal>
+            </Portal>
             <View>
                 <IconButton 
                     icon={"keyboard-backspace"}
                     iconColor={globalStyles.colors.black}
                     onPress={async ()=> {
-                        nfcManager.setEventListener(NfcEvents.DiscoverTag, null)
+                        
                         await nfcManager.cancelTechnologyRequest()
+                        clearInterval(intervalId)
                         props.navigation.goBack()
                     }}
                     
@@ -91,7 +156,16 @@ const NFCReadScreen = props =>{
             <View
                 style={styles.wrappper} 
             >
-                
+                <View>
+                    <Text
+                        style={{
+                            fontSize:16,
+                            color:globalStyles.colors.blue
+                        }}
+                    >
+                        {timer}s
+                    </Text>
+                </View>
                 <Image 
                     source={require('../../assets/gif/nfcTrns.gif')}
                     style={styles.logo}
@@ -106,9 +180,7 @@ const NFCReadScreen = props =>{
                 >
                     Para realizar la transaccion acerque los dispositivos a una distancia de 30cm aprox.
                 </Text>
-                <Button
-                    onPress={onPress}
-                >Leer</Button>
+                
             </View>
         </View>
     )

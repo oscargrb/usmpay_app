@@ -1,5 +1,5 @@
-import {View, StyleSheet, FlatList, ScrollView} from 'react-native'
-import { Button, DataTable, IconButton, Text, TextInput } from 'react-native-paper'
+import {View, StyleSheet, FlatList, ScrollView, Pressable} from 'react-native'
+import { Button, DataTable, IconButton, Modal, Portal, Text, TextInput } from 'react-native-paper'
 import globalStyles from '../../common/globalStyles'
 import {useContext, useState, useEffect} from 'react'
 import UserInfoContext from '../../context/UserInfoContext'
@@ -82,6 +82,14 @@ const HistoricUser = props =>{
     const [historic, setHistoric] = useState([])
     const [historicFilter, setHistoricFilter] = useState([])
     const [loader, setLoader] = useState(false)
+    const [modal, setModal] = useState(false)
+    const [select, setSelect] = useState(null)
+
+    const balance = new Intl.NumberFormat("es-VE", {
+        /* style: "currency",
+        currency: "EUR", */
+        minimumFractionDigits: 0,
+    });
 
     const findHistoric = async () =>{
         setLoader(true)
@@ -132,6 +140,224 @@ const HistoricUser = props =>{
 
     return(
         <View>
+
+            {
+                select?
+                    <Portal>
+                    <Modal visible={modal} 
+                        style={{
+                            backgroundColor:globalStyles.colors.white,
+                            marginHorizontal: 50,
+                            marginTop:140,
+                            marginBottom:140,
+                            padding:20,
+                            borderRadius:20
+                        }}
+                    >
+                        <View
+                            style={{
+                                
+                                flexDirection:"column",
+                                justifyContent:"center",
+                                alignItems:"center"
+                            }}
+                        >
+                            <View>
+                                <Text
+                                    style={{
+                                        fontSize:20,
+                                        color:globalStyles.colors.black,
+                                        margin:20,
+                                        fontWeight:"bold"
+                                    }}
+                                >
+                                    Detalles
+                                </Text>
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection:"row",
+                                    margin:10
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width:"100%"
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color:globalStyles.colors.black,
+                                            fontSize:11
+                                        }}
+                                    >
+                                        Número de Operación
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            borderBottomWidth:1,
+                                            borderColor:globalStyles.colors.blue,
+                                            padding:5,
+                                            color:globalStyles.colors.black,
+                                        }}
+                                    >
+                                        {select.id.toString().padStart(7, "0")}
+                                    </Text>
+                                </View>
+                                
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection:"row",
+                                    margin:10
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width:"100%"
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color:globalStyles.colors.black,
+                                            fontSize:11
+                                        }}
+                                    >
+                                        Típo de Operación:
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            borderBottomWidth:1,
+                                            borderColor:globalStyles.colors.blue,
+                                            padding:5,
+                                            color:globalStyles.colors.black,
+                                        }}
+                                    >
+                                        {select.type}
+                                    </Text>
+                                </View>
+                                
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection:"row",
+                                    margin:10
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width:"100%"
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color:globalStyles.colors.black,
+                                            fontSize:11
+                                        }}
+                                    >
+                                        Ruta
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            borderBottomWidth:1,
+                                            borderColor:globalStyles.colors.blue,
+                                            padding:5,
+                                            color:globalStyles.colors.black,
+                                        }}
+                                    >
+                                        {Rutas.find(i=> i.id == select.ruta_id).nbRuta}
+                                    </Text>
+                                </View>
+                                
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection:"row",
+                                    margin:10
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width:"100%"
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color:globalStyles.colors.black,
+                                            fontSize:11
+                                        }}
+                                    >
+                                        Fecha:
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            borderBottomWidth:1,
+                                            borderColor:globalStyles.colors.blue,
+                                            padding:5,
+                                            color:globalStyles.colors.black,
+                                        }}
+                                    >
+                                        {new Date(select.createdAt).toLocaleString(
+                                            undefined,
+                                            {day: "2-digit", month:"2-digit", "year":"2-digit"}
+                                        )}
+                                    </Text>
+                                </View>
+                                
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection:"row",
+                                    margin:10
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width:"100%"
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color:globalStyles.colors.black,
+                                            fontSize:11
+                                        }}
+                                    >
+                                        Cantidad:
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            borderBottomWidth:1,
+                                            borderColor:globalStyles.colors.blue,
+                                            padding:5,
+                                            color:globalStyles.colors.black,
+                                        }}
+                                    >
+                                        {
+                                            balance.format(select.amount)
+                                        }
+                                    </Text>
+                                </View>
+                                
+                            </View>
+                            <Button
+                                textColor={globalStyles.colors.white}
+                                style={{
+                                    margin:30,
+                                    backgroundColor:globalStyles.colors.blue,
+                                }}
+                                onPress={async ()=>{
+                                    setModal(false)
+                                }}
+                            >
+                                Continuar
+                            </Button>
+                        </View>
+                        
+                    </Modal>
+                </Portal>:
+                <></>
+            }
+
             <ScrollView
                 style={styles.container}
             >
@@ -210,10 +436,10 @@ const HistoricUser = props =>{
                             }}
                         >
                             <DataTable.Title textStyle={styles.tableTitle}>
-                                Numero Op.
+                                Número Op.
                             </DataTable.Title>
                             <DataTable.Title textStyle={styles.tableTitle}>
-                                Operacion
+                                Operación
                             </DataTable.Title>
                             <DataTable.Title textStyle={styles.tableTitle}>
                                 Ruta
@@ -221,33 +447,49 @@ const HistoricUser = props =>{
                             <DataTable.Title textStyle={styles.tableTitle}>
                                 Fecha
                             </DataTable.Title>
+                            <DataTable.Title textStyle={styles.tableTitle}>
+                                Cantidad
+                            </DataTable.Title>
                         </DataTable.Header>
 
 
                         {
                             historicFilter.map(item=>{
                                 return(
-                                    <DataTable.Row key={item.id}>
-                                        <DataTable.Cell textStyle={styles.cell}>
-                                            {item.id.toString().padStart(7, "0")}
-                                        </DataTable.Cell>
-                                        <DataTable.Cell textStyle={Object.assign({
-                                            backgroundColor: item.type == "Compra"?
-                                                globalStyles.colors.red:
-                                                globalStyles.colors.green
-                                        }, styles.cellUnic)}>
-                                            {item.type}
-                                        </DataTable.Cell>
-                                        <DataTable.Cell textStyle={styles.cell}>
-                                            {Rutas.find(i=> i.id == item.ruta_id).nbRuta}
-                                        </DataTable.Cell>
-                                        <DataTable.Cell textStyle={styles.cell}>
-                                            {new Date(item.createdAt).toLocaleString(
-                                                undefined,
-                                                {day: "2-digit", month:"2-digit", "year":"2-digit"}
-                                            )}
-                                        </DataTable.Cell>
-                                    </DataTable.Row>
+                                    <Pressable
+                                        onPress={()=> {
+                                            setSelect(item)    
+                                            setModal(true)
+                                        }}
+                                        key={item.id}
+                                    >
+                                        <DataTable.Row >
+                                            <DataTable.Cell textStyle={styles.cell}>
+                                                {item.id.toString().padStart(7, "0")}
+                                            </DataTable.Cell>
+                                            <DataTable.Cell textStyle={Object.assign({
+                                                backgroundColor: item.type == "Compra"?
+                                                    globalStyles.colors.red:
+                                                    globalStyles.colors.green
+                                            }, styles.cellUnic)}>
+                                                {item.type}
+                                            </DataTable.Cell>
+                                            <DataTable.Cell textStyle={styles.cell}>
+                                                {Rutas.find(i=> i.id == item.ruta_id).nbRuta}
+                                            </DataTable.Cell>
+                                            <DataTable.Cell textStyle={styles.cell}>
+                                                {new Date(item.createdAt).toLocaleString(
+                                                    undefined,
+                                                    {day: "2-digit", month:"2-digit", "year":"2-digit"}
+                                                )}
+                                            </DataTable.Cell>
+                                            <DataTable.Cell textStyle={styles.cell}>
+                                                {
+                                                    balance.format(item.amount)
+                                                }
+                                            </DataTable.Cell>
+                                        </DataTable.Row>
+                                    </Pressable>
                                 )
                             })
                         }

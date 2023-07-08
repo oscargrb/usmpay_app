@@ -58,7 +58,7 @@ const LoginScreen = props=>{
 
     const [loader, setLoader] = useState(false)
 
-    
+    const [hidePwd, setHidePwd] = useState(true)
 
     const onSubmitForm = (dataFinger)=>{
         Keyboard.dismiss()
@@ -69,10 +69,17 @@ const LoginScreen = props=>{
             if(!registerData[element]){
                 setLoader(false)
                 return(
-                    Alert.alert("Error al iniciar Sesión", "Debe completar el campo " + element)
+                    Alert.alert("Error al iniciar Sesión", `Debe completar el campo: ${element=="document"?"Número de documento":"Clave de Acceso"}`)
                 )
             }
         };
+
+        if(registerData.document.length < 7){
+            setLoader(false)
+            return(
+                Alert.alert("Error:","Formato de Documento incorrecto xxxxxxx")
+            )
+        }
         
 
         fetch(`${ApiService.url}/auth`,{
@@ -108,20 +115,20 @@ const LoginScreen = props=>{
                         
                     }else{
                         setLoader(false)
-                        Alert.alert('Bad Login!')
+                        Alert.alert('Error:', "No se pudo iniciar sesión")
                     }
                 }).catch(e=>{
                     setLoader(false)
-                    Alert.alert('Bad Login!')
+                    Alert.alert('Error:', "El usuario no existe")
                 })
             }else{
                 setLoader(false)
-                Alert.alert('Bad Login!')
+                Alert.alert('Error:', "Contraseña Incorrecta")
             }
             
         }).catch(e=>{
             setLoader(false)
-            Alert.alert('Bad Login!')
+            Alert.alert('Error:', "No se pudo iniciar sesión")
             console.log(e)
         })
     }
@@ -166,6 +173,7 @@ const LoginScreen = props=>{
                     onChangeText={text => onChageField("document", text)}
                     value={registerData.document}
                     inputMode='numeric'
+                    maxLength={9}
                     label={
                         <Text
                             style={{backgroundColor:"white", color:"black"}}
@@ -196,6 +204,8 @@ const LoginScreen = props=>{
                 <TextInput
                     onChangeText={text => onChageField("password", text)}
                     value={registerData.password}
+
+                    maxLength={100}
                     
                     label={
                         <Text
@@ -218,8 +228,27 @@ const LoginScreen = props=>{
                     contentStyle={{color:globalStyles.colors.black}}
                     underlineColor='transparent'
                     activeUnderlineColor='transparent'
-                    
-                    secureTextEntry={true}
+
+                    secureTextEntry={hidePwd}
+                    right={
+                        <TextInput.Icon
+                            icon={"eye"} 
+                            iconColor={globalStyles.colors.black}
+                            onPress={()=>{
+                                hidePwd?
+                                    setHidePwd(false):
+                                    setHidePwd(true)
+                            }}
+                            size={25}
+                            style={{
+                                backgroundColor:"white",
+                                borderRadius:0,
+                                width:58,
+                                height:56
+                            }}
+                            containerColor="transparent"
+                        />
+                    }
                 /> 
             </View>
 
@@ -234,6 +263,23 @@ const LoginScreen = props=>{
                 >
                     Iniciar Sesión
                 </Button>
+            </View>
+
+            <View
+                style={{
+                    justifyContent:"center",
+                    alignItems:"center"
+                }}
+            >
+                <Image
+                    style={{
+                        width:250,
+                        height:250,
+                        opacity:0.8
+                    }}
+                    source={require('../assets/login.png')}
+                    
+                />
             </View>
 
             {

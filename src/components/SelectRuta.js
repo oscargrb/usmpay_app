@@ -75,7 +75,7 @@ const SelectRuta = props =>{
                             >
                                 <Pressable
                                     onPress={()=>{
-                                        userInfo.tickets.length > 0 && userInfo.tickets.filter(j=> j.ruta_id == i.id).length > 0?
+                                        userInfo.tickets.length > 0 && userInfo.tickets.find(j=> j.ruta_id == i.id).count > 0?
                                         selectRuta(i.nbRuta):
                                         Alert.alert("Error", "No posees tickets suficientes para esta ruta")
                                     }}
@@ -122,9 +122,9 @@ const SelectRuta = props =>{
                                             mode="contained"    
                                         >
                                             {
-                                                userInfo.tickets.filter(j=> j.ruta_id == i.id).length > 0?
-                                                userInfo.tickets.filter(j=> j.ruta_id == i.id).length:
-                                                "0"
+                                                userInfo.tickets.find(j=> j.ruta_id == i.id)?
+                                                    userInfo.tickets.find(j=> j.ruta_id == i.id).count:
+                                                    0
                                             }
                                         </Button>
                                         

@@ -89,7 +89,7 @@ const OptionsReader = props =>{
                     
                     <Portal>
                     <Dialog visible={true} onDismiss={closeModal}>
-                        <Dialog.Title>Alert</Dialog.Title>
+                        <Dialog.Title>Seleccione la Ruta a Cobrar</Dialog.Title>
                         <Dialog.Content>
 
                             {

@@ -9,6 +9,7 @@ import RutasContext from '../context/RutasContext'
 const DisplayTickets = props =>{
 
     const {Rutas} = useContext(RutasContext)
+    console.log(Rutas)
 
     const {userInfo} = useContext(UserInfoContext)
 
@@ -81,6 +82,7 @@ const DisplayTickets = props =>{
                     title={"Tickets Disponibles"}
                     titleStyle = {styles.CardTitle} 
                 />
+
                 <Card.Content
                     style={styles.tipoTicketContainer}
                 >
@@ -89,7 +91,7 @@ const DisplayTickets = props =>{
                             return(
                                 <View
                                     style={styles.ticketsDisp}
-                                    key={i.id}
+                                    key={Rutas.indexOf(i)}
                                 >
                                     <IconButton 
                                         icon={"ticket"}
@@ -102,9 +104,10 @@ const DisplayTickets = props =>{
                                         }}
                                     />
                                     <Text style={styles.CardContentTickets} >
-                                        {userInfo.tickets?
-                                            userInfo.tickets.filter(ticket=> ticket.ruta_id == i.id).length:
-                                            0
+                                        {
+                                            userInfo.tickets.find(j=> j.ruta_id == i.id)?
+                                                userInfo.tickets.find(j=> j.ruta_id == i.id).count:
+                                                0
                                         }
                                     </Text>
                                     
@@ -114,6 +117,7 @@ const DisplayTickets = props =>{
                     }
                     
                 </Card.Content>
+                
             </Card>
         </View>
     )

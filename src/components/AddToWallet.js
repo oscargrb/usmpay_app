@@ -16,7 +16,7 @@ const AddToWallet = props =>{
         Keyboard.dismiss()
         if(!refNumb){
             return(
-                Alert.alert("Debe completar todos los campos")
+                Alert.alert("Error: ","Debe completar todos los campos")
             )
         }
 
@@ -38,19 +38,19 @@ const AddToWallet = props =>{
                 reponse.json().then(data=>{
                     console.log(data)
                     if(data.ok){
-                        Alert.alert("Informacion", "La operacion se realizó de forma exitosa", [
+                        Alert.alert("Información", "La operación se realizó de forma exitosa", [
                             {text: 'OK', onPress: () => props.nav('Acount')}
                         ])
                     }else{
-                        Alert.alert("Informacion", "Error: " + data.info)
+                        Alert.alert("Error: ", data.info)
                     }
                 })
             }else{
-                Alert.alert("Informacion", "Error: operacion termino de forma incorrecta")
+                Alert.alert("Error: ", "La operación terminó de forma incorrecta")
             }
         }).catch(e=>{
             setLoader(false)
-            Alert.alert("Informacion", "Error: operacion termino de forma incorrecta", [
+            Alert.alert("Error: ", "La operación terminó de forma incorrecta", [
                 {text: 'OK', onPress: () => props.nav('Acount')}
             ])
         })
@@ -125,9 +125,9 @@ const AddToWallet = props =>{
                     subtitleStyle = {styles.subtitle}
                 />
                 <Card.Content>
-                    <Text style={styles.CardContentInfo} >Banco: Mercantil</Text>
-                    <Text style={styles.CardContentInfo} >Documento: J-981237298-1</Text>
-                    <Text style={styles.CardContentInfo} >Telefono: 04263151271</Text>
+                    <Text style={styles.CardContentInfo} >Banco: Venezuela (0102)</Text>
+                    <Text style={styles.CardContentInfo} >Documento: V-27301568</Text>
+                    <Text style={styles.CardContentInfo} >Teléfono: 04263151271</Text>
                 </Card.Content>
             </Card>
 
@@ -191,7 +191,7 @@ const AddToWallet = props =>{
                             <Text
                                 style={{backgroundColor:"white", color:"black"}}
                             >
-                                Numero de Operacion *
+                                Número de Operación *
                             </Text>
                         }
                         mode="flat"

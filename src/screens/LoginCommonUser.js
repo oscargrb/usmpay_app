@@ -64,6 +64,8 @@ const LoginCommonUser = props=>{
         password: null
     })
 
+    const [hidePwd, setHidePwd] = useState(true)
+
     const [fingerprintEnable, setFingerprintEnable] = useState(false)
 
     const [loader, setLoader] = useState(false)
@@ -153,24 +155,23 @@ const LoginCommonUser = props=>{
                                     
                                 }else{
                                     setLoader(false)
-                                    Alert.alert('Bad Login!')
+                                    Alert.alert('Error:', "No se pudo iniciar sesión")
                                 }
                             })
                         }else{
                             setLoader(false)
-                            Alert.alert('Bad Login!')
+                            Alert.alert('Error:', "No se pudo iniciar sesión")
                         }
                         
                     }).catch(e=>{
                         setLoader(false)
-                        Alert.alert('Bad Login!')
+                        Alert.alert('Error:', "No se pudo iniciar sesión")
                         console.log(e)
                     }) 
                 }
             })
             .catch(error=>{
                 setLoader(false)
-                Alert.alert('Authetication fail!')
                 console.log(error)
             })
     }
@@ -184,7 +185,7 @@ const LoginCommonUser = props=>{
             if(!registerData[element]){
                 setLoader(false)
                 return(
-                    Alert.alert("Error al iniciar Sesión", "Debe completar el campo " + element)
+                    Alert.alert("Error al iniciar Sesión", "Debe completar el campo: " + "Clave de Acceso")
                 )
             }
         };
@@ -224,20 +225,20 @@ const LoginCommonUser = props=>{
                         
                     }else{
                         setLoader(false)
-                        Alert.alert('Bad Login!')
+                        Alert.alert('Error:', "No se pudo iniciar sesión")
                     }
                 }).catch(e=>{
                     setLoader(false)
-                    Alert.alert('Bad Login!')
+                    Alert.alert('Error:', "El usuario no existe")
                 })
             }else{
                 setLoader(false)
-                Alert.alert('Bad Login!')
+                Alert.alert('Error:', "Contraseña Incorrecta")
             }
             
         }).catch(e=>{
             setLoader(false)
-            Alert.alert('Bad Login!')
+            Alert.alert('Error:', "No se pudo iniciar sesión")
             console.log(e)
         })
     }
@@ -314,6 +315,8 @@ const LoginCommonUser = props=>{
                     onChangeText={text => onChageField("password", text)}
                     value={registerData.password}
                     
+                    maxLength={100}
+
                     label={
                         <Text
                             style={{backgroundColor:"white", color:"black"}}
@@ -321,6 +324,8 @@ const LoginCommonUser = props=>{
                             Clave de acceso *
                         </Text>
                     }
+
+                    
                     
                     selectionColor="#00c"
                     outlineColor={globalStyles.colors.blue}
@@ -336,7 +341,27 @@ const LoginCommonUser = props=>{
                     underlineColor='transparent'
                     activeUnderlineColor='transparent'
                     
-                    secureTextEntry={true}
+                    secureTextEntry={hidePwd}
+
+                    right={
+                        <TextInput.Icon
+                            icon={"eye"} 
+                            iconColor={globalStyles.colors.black}
+                            onPress={()=>{
+                                hidePwd?
+                                    setHidePwd(false):
+                                    setHidePwd(true)
+                            }}
+                            size={25}
+                            style={{
+                                backgroundColor:"white",
+                                borderRadius:0,
+                                width:58,
+                                height:56
+                            }}
+                            containerColor="transparent"
+                        />
+                    }
                 /> 
             </View>
 
@@ -392,6 +417,23 @@ const LoginCommonUser = props=>{
                 </View>:
                 <></>
             }
+
+            <View
+                style={{
+                    justifyContent:"center",
+                    alignItems:"center"
+                }}
+            >
+                <Image
+                    style={{
+                        width:250,
+                        height:250,
+                        opacity:0.8
+                    }}
+                    source={require('../assets/login.png')}
+                    
+                />
+            </View>
 
             {
                 loader?

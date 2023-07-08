@@ -39,8 +39,9 @@ const Preload = ({navigation}) =>{
                     }).then(response=>{
                         response.json().then(data=>{
                             if(!data.error){
+                                console.log(data)
                                 updateUserInfo({
-                                    tickets: data.foundUser.Tickets,
+                                    tickets: data.tickets,
                                     balance: balance.format(data.foundUser.UserBalance.balance),
                                     correo: data.foundUser.correo,
                                     document: data.foundUser.id_number,

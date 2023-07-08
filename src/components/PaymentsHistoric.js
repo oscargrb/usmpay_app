@@ -8,7 +8,6 @@ import UserInfoContext from "../context/UserInfoContext"
 import RutasContext from "../context/RutasContext"
 
 
-
 const PaymentsHistoric = props =>{
 
     const {userInfo} = useContext(UserInfoContext)
@@ -19,6 +18,12 @@ const PaymentsHistoric = props =>{
     const findIndexOpacity = (index)=>{
         return (1 - (index/historic.length))
     }
+
+    const balance = new Intl.NumberFormat("es-VE", {
+        /* style: "currency",
+        currency: "EUR", */
+        minimumFractionDigits: 0,
+    });
 
     const findHistoric = async () =>{
         const auth = await nxu.gnxut()
@@ -32,10 +37,10 @@ const PaymentsHistoric = props =>{
         }).then(response=>{
             response.json().then(data=>{
                 if(response.status == 200){
-                    /* console.log(data) */
+                    
                     setHistoric(
                         data.sort((a,b)=> new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                            .slice(0, 11)
+                            .slice(0, 10)
                     )
                     return ()=>{
                         true
@@ -125,16 +130,19 @@ const PaymentsHistoric = props =>{
                     
                 >
                     <DataTable.Title textStyle={styles.tableTitle}>
-                        Numero Op.
+                        Número Op.
                     </DataTable.Title>
                     <DataTable.Title textStyle={styles.tableTitle}>
-                        Operacion
+                        Operación
                     </DataTable.Title>
                     <DataTable.Title textStyle={styles.tableTitle}>
                         Ruta
                     </DataTable.Title>
                     <DataTable.Title textStyle={styles.tableTitle}>
                         Fecha
+                    </DataTable.Title>
+                    <DataTable.Title textStyle={styles.tableTitle}>
+                        Cantidad
                     </DataTable.Title>
                 </DataTable.Header>
                 <ScrollView>
@@ -164,6 +172,11 @@ const PaymentsHistoric = props =>{
                                             undefined,
                                             {day: "2-digit", month:"2-digit", "year":"2-digit"}
                                         )}
+                                    </DataTable.Cell>
+                                    <DataTable.Cell textStyle={styles.cell}>
+                                        {
+                                            balance.format(item.amount)
+                                        }
                                     </DataTable.Cell>
                                 </DataTable.Row>
                             )

@@ -90,13 +90,13 @@ const AddTickets = props =>{
         
 
         if(!checked.nbRuta){
-            Alert.alert("Por favor selecciona una ruta")
+            Alert.alert("Error: ","Por favor seleccione una ruta")
             return
         }else if(Cantidad <= 0){
-            Alert.alert("Por favor indique cantidad")
+            Alert.alert("Error: ","Por favor indique cantidad")
             return
         }else if(Cantidad > userInfo.balance){
-            Alert.alert("Balance insuficiente para adiquirir la cantidad seleccionada")
+            Alert.alert("Error: ","Balance insuficiente para adquirir la cantidad seleccionada")
             return
         }else{
             setLoader(true)
@@ -118,16 +118,16 @@ const AddTickets = props =>{
                 response.json().then(data=>{
                     console.log(data)
                     if(response.status == 200){
-                        Alert.alert("Informacion", "La operacion se realizó de forma exitosa", [
+                        Alert.alert("Información", "La operación se realizó de forma exitosa", [
                             {text: 'OK', onPress: () => props.nav('Acount')}
                         ])
                     }else{
-                        Alert.alert("Informacion", "Error: " + data.error)
+                        Alert.alert("Error", data.error)
                     }
                 })
             }).catch(e=>{
                 setLoader(false)
-                Alert.alert("Informacion", "Error: operacion termino de forma incorrecta")
+                Alert.alert("Error", "La operación termino de forma incorrecta")
             })
         }
     }
@@ -143,6 +143,8 @@ const AddTickets = props =>{
     onChangeInputs = ()=>{
         if(checked.precio && Cantidad>0){
             setTotal(checked.precio * Cantidad)
+        }else{
+            setTotal(0)
         }
     }
 
@@ -241,6 +243,7 @@ const AddTickets = props =>{
                             value={`${Cantidad}`}
                             inputMode='numeric'
                             backgroundColor={globalStyles.colors.white}
+                            maxLength={3}
                             label={
                                 <Text
                                     style={{backgroundColor:"white", color:"black"}}
@@ -252,6 +255,7 @@ const AddTickets = props =>{
                             contentStyle={{color:globalStyles.colors.black}}
                             onChangeText={(e)=> {
                                 setCantidad(Math.floor(e))
+                                onChangeInputs()
                             }}
                             onEndEditing={onChangeInputs}
                             underlineColor='transparent'
@@ -329,7 +333,7 @@ const AddTickets = props =>{
                       
                       <Portal>
                         <Dialog visible={true} onDismiss={closeModal}>
-                            <Dialog.Title>Alert</Dialog.Title>
+                            <Dialog.Title>Por favor seleccione una Ruta</Dialog.Title>
                             <Dialog.Content>
 
                                 {
@@ -356,7 +360,7 @@ const AddTickets = props =>{
                                 
                             </Dialog.Content>
                             <Dialog.Actions>
-                                <Button onPress={closeModal}>Done</Button>
+                                <Button onPress={closeModal}>Seleccionar</Button>
                             </Dialog.Actions>
                         </Dialog>
                       </Portal>

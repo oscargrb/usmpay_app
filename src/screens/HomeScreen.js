@@ -101,7 +101,7 @@ const HomeScreen = props =>{
                         props.navigation.navigate('Login')
                     }
                 >
-                    Iniciar Sesion
+                    Iniciar Sesión
                 </Button>
             </View>
             <View
